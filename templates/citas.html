@@ -3,10 +3,12 @@
 <h2>Lista de Citas</h2>
 {% if citas %}
 <table border="1" cellpadding="5">
-  <tr><th>Fecha</th><th>Paciente ID</th><th>Alumno ID</th><th>Notas</th></tr>
+  <tr><th>Día</th><th>Hora</th><th>Clínica</th><th>Paciente ID</th><th>Alumno ID</th><th>Notas</th></tr>
   {% for c in citas %}
   <tr>
-    <td>{{ c.fecha }}</td>
+    <td>{{ c.dia }}</td>
+    <td>{{ c.hora_inicio }} - {{ c.hora_fin }}</td>
+    <td>{{ c.clinica }}</td>
     <td>{{ c.paciente_id }}</td>
     <td>{{ c.alumno_id }}</td>
     <td>{{ c.notas }}</td>
