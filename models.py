@@ -17,11 +17,14 @@ class Alumno(db.Model):
 
 class Cita(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    dia = db.Column(db.String(20), nullable=False)       # Ejemplo: "Lunes"
-    hora_inicio = db.Column(db.String(10), nullable=False)  # Ejemplo: "12:00"
-    hora_fin = db.Column(db.String(10), nullable=False)     # Ejemplo: "14:00"
-    clinica = db.Column(db.String(50), nullable=False)   # Ejemplo: "Prótesis Removible"
+    dia = db.Column(db.String(20), nullable=False)
+    hora_inicio = db.Column(db.String(10), nullable=False)
+    hora_fin = db.Column(db.String(10), nullable=False)
+    clinica = db.Column(db.String(50), nullable=False)
     paciente_id = db.Column(db.Integer, db.ForeignKey('paciente.id'))
     alumno_id = db.Column(db.Integer, db.ForeignKey('alumno.id'))
     notas = db.Column(db.Text)
+
+    paciente = db.relationship("Paciente", backref="citas")
+    alumno = db.relationship("Alumno", backref="citas")
 
