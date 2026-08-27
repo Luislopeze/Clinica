@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from models import db, Paciente, Alumno, Cita
 
 app = Flask(__name__)
@@ -20,17 +20,32 @@ def create_tables_once():
 def index():
     return "Clínica Luis & Angie V2 funcionando 🚀"
 
-# Registrar paciente
+# Ruta para mostrar el formulario en navegador
+@app.route("/formulario")
+def formulario():
+    return render_template("formulario.html")
+
+# Registrar paciente vía formulario o JSON
 @app.route("/paciente", methods=["POST"])
 def agregar_paciente():
-    data = request.json
-    nuevo = Paciente(
-        folio=data["folio"],
-        nombre=data["nombre"],
-        telefono=data.get("telefono"),
-        fecha_nacimiento=data.get("fecha_nacimiento"),
-        notas=data.get("notas")
-    )
+    # Si viene de formulario HTML
+    if request.form:
+        nuevo = Paciente(
+            folio=request.form["folio"],
+            nombre=request.form["nombre"],
+            telefono=request.form.get("telefono"),
+            fecha_nacimiento=request.form.get("fecha_nacimiento"),
+            notas=request.form.get("notas")
+        )
+    else:  # Si viene en JSON (Postman/cURL)
+        data = request.json
+        nuevo = Paciente(
+            folio=data["folio"],
+            nombre=data["nombre"],
+            telefono=data.get("telefono"),
+            fecha_nacimiento=data.get("fecha_nacimiento"),
+            notas=data.get("notas")
+        )
     db.session.add(nuevo)
     db.session.commit()
     return jsonify({"mensaje": "Paciente registrado"}), 201
