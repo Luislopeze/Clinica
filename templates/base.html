@@ -10,12 +10,15 @@
   </style>
 </head>
 <body>
-  <nav>
-    <a href="{{ url_for('index') }}">Inicio</a>
-    <a href="{{ url_for('formulario') }}">Registrar Paciente</a>
-    <a href="{{ url_for('listar_pacientes') }}">Pacientes</a>
-    <a href="{{ url_for('listar_citas') }}">Citas</a>
-  </nav>
+<nav>
+  <a href="{{ url_for('index') }}">Inicio</a>
+  <a href="{{ url_for('formulario') }}">Registrar Paciente</a>
+  <a href="{{ url_for('listar_pacientes') }}">Pacientes</a>
+  <a href="{{ url_for('formulario_alumno') }}">Registrar Alumno</a>
+  <a href="{{ url_for('listar_alumnos') }}">Alumnos</a>
+  <a href="{{ url_for('formulario_cita') }}">Registrar Cita</a>
+  <a href="{{ url_for('listar_citas') }}">Citas</a>
+</nav>
   {% block content %}{% endblock %}
 </body>
 </html>
