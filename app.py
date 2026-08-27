@@ -25,14 +25,15 @@ def formulario():
 # Registrar paciente con control de duplicados
 @app.route("/paciente", methods=["POST"])
 def agregar_paciente():
-    folio = request.form["folio"]
-    existente = Paciente.query.filter_by(folio=folio).first()
+    numero_folio = request.form["folio"]   # usuario solo escribe el número
+    folio_completo = f"EXP-{numero_folio}" # el sistema agrega "EXP-"
+
+    existente = Paciente.query.filter_by(folio=folio_completo).first()
     if existente:
-        # Si el folio ya existe, mostramos mensaje en el formulario
-        return render_template("formulario.html", mensaje="⚠️ Ese folio ya existe, usa otro.")
+        return render_template("formulario.html", mensaje="⚠️ Ese folio ya existe, usa otro número.")
 
     nuevo = Paciente(
-        folio=folio,
+        folio=folio_completo,
         nombre=request.form["nombre"],
         telefono=request.form.get("telefono"),
         fecha_nacimiento=request.form.get("fecha_nacimiento"),
@@ -41,6 +42,7 @@ def agregar_paciente():
     db.session.add(nuevo)
     db.session.commit()
     return redirect(url_for("listar_pacientes"))
+
 
 @app.route("/pacientes")
 def listar_pacientes():
