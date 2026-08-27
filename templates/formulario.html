@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Registrar Paciente</title>
-</head>
-<body>
-  <h1>Registrar Paciente</h1>
-  <form action="/paciente" method="post">
-    Folio: <input type="text" name="folio"><br>
-    Nombre: <input type="text" name="nombre"><br>
-    Teléfono: <input type="text" name="telefono"><br>
-    Fecha de nacimiento: <input type="date" name="fecha_nacimiento"><br>
-    Notas: <textarea name="notas"></textarea><br>
-    <button type="submit">Guardar</button>
-  </form>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<h2>Registrar Paciente</h2>
+<form action="{{ url_for('agregar_paciente') }}" method="post">
+  Folio: <input type="text" name="folio"><br>
+  Nombre: <input type="text" name="nombre"><br>
+  Teléfono: <input type="text" name="telefono"><br>
+  Fecha de nacimiento: <input type="date" name="fecha_nacimiento"><br>
+  Notas: <textarea name="notas"></textarea><br>
+  <button type="submit">Guardar</button>
+</form>
+{% endblock %}
