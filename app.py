@@ -97,8 +97,8 @@ def agregar_cita():
         hora_inicio=hora_inicio,
         hora_fin=hora_fin,
         clinica=clinica,
-        paciente_id=request.form["paciente_id"],
-        alumno_id=request.form["alumno_id"],
+        paciente_id=int(request.form["paciente_id"]),  # 🔧 convertir a entero
+        alumno_id=int(request.form["alumno_id"]),      # 🔧 convertir a entero
         notas=request.form.get("notas")
     )
     db.session.add(nueva_cita)
