@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Lista de Citas</h2>
-<ul>
+{% if citas %}
+<table border="1" cellpadding="5">
+  <tr><th>Fecha</th><th>Paciente ID</th><th>Alumno ID</th><th>Notas</th></tr>
   {% for c in citas %}
-    <li>{{ c.fecha }} - Paciente ID: {{ c.paciente_id }} - Alumno ID: {{ c.alumno_id }}</li>
+  <tr>
+    <td>{{ c.fecha }}</td>
+    <td>{{ c.paciente_id }}</td>
+    <td>{{ c.alumno_id }}</td>
+    <td>{{ c.notas }}</td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
+{% else %}<p>No hay citas registradas.</p>{% endif %}
 {% endblock %}
