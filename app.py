@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for
 from models import db, Paciente, Alumno, Cita
 
 app = Flask(__name__)
 
+# Conexión a tu base PostgreSQL en Render
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://clinica_db_ov6b_user:l2yxIhbi371H74I5HVh8B69581fJ1iOI@dpg-da8b3q0ae00c73cd5sog-a/clinica_db_ov6b"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -18,11 +19,11 @@ def create_tables_once():
 def index():
     return render_template("index.html")
 
+# ---------------- PACIENTES ----------------
 @app.route("/formulario")
 def formulario():
     return render_template("formulario.html")
 
-# Registrar paciente con control de duplicados
 @app.route("/paciente", methods=["POST"])
 def agregar_paciente():
     numero_folio = request.form["folio"]   # usuario solo escribe el número
@@ -43,18 +44,12 @@ def agregar_paciente():
     db.session.commit()
     return redirect(url_for("listar_pacientes"))
 
-
 @app.route("/pacientes")
 def listar_pacientes():
     pacientes = Paciente.query.all()
     return render_template("pacientes.html", pacientes=pacientes)
 
-@app.route("/citas")
-def listar_citas():
-    citas = Cita.query.all()
-    return render_template("citas.html", citas=citas)
-    
-    # ---------------- ALUMNOS ----------------
+# ---------------- ALUMNOS ----------------
 @app.route("/formulario_alumno")
 def formulario_alumno():
     return render_template("formulario_alumno.html")
@@ -102,4 +97,3 @@ def agregar_cita():
 def listar_citas():
     citas = Cita.query.all()
     return render_template("citas.html", citas=citas)
-
