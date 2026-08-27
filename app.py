@@ -53,3 +53,53 @@ def listar_pacientes():
 def listar_citas():
     citas = Cita.query.all()
     return render_template("citas.html", citas=citas)
+    
+    # ---------------- ALUMNOS ----------------
+@app.route("/formulario_alumno")
+def formulario_alumno():
+    return render_template("formulario_alumno.html")
+
+@app.route("/alumno", methods=["POST"])
+def agregar_alumno():
+    matricula = request.form["matricula"]
+    existente = Alumno.query.filter_by(matricula=matricula).first()
+    if existente:
+        return render_template("formulario_alumno.html", mensaje="⚠️ Esa matrícula ya existe, usa otra.")
+
+    nuevo = Alumno(
+        nombre=request.form["nombre"],
+        matricula=matricula
+    )
+    db.session.add(nuevo)
+    db.session.commit()
+    return redirect(url_for("listar_alumnos"))
+
+@app.route("/alumnos")
+def listar_alumnos():
+    alumnos = Alumno.query.all()
+    return render_template("alumnos.html", alumnos=alumnos)
+
+# ---------------- CITAS ----------------
+@app.route("/formulario_cita")
+def formulario_cita():
+    pacientes = Paciente.query.all()
+    alumnos = Alumno.query.all()
+    return render_template("formulario_cita.html", pacientes=pacientes, alumnos=alumnos)
+
+@app.route("/cita", methods=["POST"])
+def agregar_cita():
+    nueva_cita = Cita(
+        fecha=request.form["fecha"],
+        paciente_id=request.form["paciente_id"],
+        alumno_id=request.form["alumno_id"],
+        notas=request.form.get("notas")
+    )
+    db.session.add(nueva_cita)
+    db.session.commit()
+    return redirect(url_for("listar_citas"))
+
+@app.route("/citas")
+def listar_citas():
+    citas = Cita.query.all()
+    return render_template("citas.html", citas=citas)
+
