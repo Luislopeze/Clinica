@@ -22,10 +22,17 @@ def index():
 def formulario():
     return render_template("formulario.html")
 
+# Registrar paciente con control de duplicados
 @app.route("/paciente", methods=["POST"])
 def agregar_paciente():
+    folio = request.form["folio"]
+    existente = Paciente.query.filter_by(folio=folio).first()
+    if existente:
+        # Si el folio ya existe, mostramos mensaje en el formulario
+        return render_template("formulario.html", mensaje="⚠️ Ese folio ya existe, usa otro.")
+
     nuevo = Paciente(
-        folio=request.form["folio"],
+        folio=folio,
         nombre=request.form["nombre"],
         telefono=request.form.get("telefono"),
         fecha_nacimiento=request.form.get("fecha_nacimiento"),
@@ -44,4 +51,3 @@ def listar_pacientes():
 def listar_citas():
     citas = Cita.query.all()
     return render_template("citas.html", citas=citas)
-
