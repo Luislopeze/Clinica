@@ -1,15 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Registrar Paciente</h2>
+
+<!-- Mensaje de error si el folio ya existe -->
+{% if mensaje %}
+  <p style="color:red; font-weight:bold;">{{ mensaje }}</p>
+{% endif %}
+
 <form action="{{ url_for('agregar_paciente') }}" method="post">
-  Folio: <input type="text" name="folio"><br>
-  Nombre: <input type="text" name="nombre"><br>
-  Teléfono: <input type="text" name="telefono"><br>
-  Fecha de nacimiento: <input type="date" name="fecha_nacimiento"><br>
-  Notas: <textarea name="notas"></textarea><br>
-  <button type="submit">Guardar</button>
+  <label>Folio:</label><br>
+  <input type="text" name="folio" required><br><br>
+
+  <label>Nombre:</label><br>
+  <input type="text" name="nombre" required><br><br>
+
+  <label>Teléfono:</label><br>
+  <input type="text" name="telefono"><br><br>
+
+  <label>Fecha de nacimiento:</label><br>
+  <input type="date" name="fecha_nacimiento"><br><br>
+
+  <label>Notas:</label><br>
+  <textarea name="notas"></textarea><br><br>
+
+  <button type="submit">Guardar Paciente</button>
 </form>
 {% endblock %}
-{% if mensaje %}
-  <p style="color:red;">{{ mensaje }}</p>
-{% endif %}
