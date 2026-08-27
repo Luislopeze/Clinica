@@ -1,38 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Registrar Cita</h2>
-<form action="{{ url_for('agregar_cita') }}" method="post">
+<h2>Registrar Paciente</h2>
 
-  <label>Selecciona clínica y horario:</label><br>
-  <select name="horario" required>
-    <option value="Lunes 12:00-14:00 Prótesis Removible">Lunes 12pm-2pm - Prótesis Removible</option>
-    <option value="Lunes 16:00-18:00 Clínica Integral">Lunes 4pm-6pm - Clínica Integral</option>
-    <option value="Martes 16:00-18:00 Clínica Integral">Martes 4pm-6pm - Clínica Integral</option>
-    <option value="Miércoles 10:00-12:00 Clínica Integral">Miércoles 10am-12pm - Clínica Integral</option>
-    <option value="Miércoles 12:00-14:00 Prótesis Removible">Miércoles 12pm-2pm - Prótesis Removible</option>
-    <option value="Miércoles 16:00-18:00 Prótesis Total">Miércoles 4pm-6pm - Prótesis Total</option>
-    <option value="Jueves 16:00-18:00 Clínica Integral">Jueves 4pm-6pm - Clínica Integral</option>
-    <option value="Viernes 10:00-12:00 Clínica Integral">Viernes 10am-12pm - Clínica Integral</option>
-    <option value="Viernes 12:00-14:00 Prótesis Total">Viernes 12pm-2pm - Prótesis Total</option>
-  </select><br><br>
+{% if mensaje %}
+  <p style="color:red; font-weight:bold;">{{ mensaje }}</p>
+{% endif %}
 
-  <label>Paciente:</label><br>
-  <select name="paciente_id" required>
-    {% for p in pacientes %}
-      <option value="{{ p.id }}">{{ p.folio }} - {{ p.nombre }}</option>
-    {% endfor %}
-  </select><br><br>
+<form action="{{ url_for('agregar_paciente') }}" method="post">
+  <label>Folio (solo número):</label><br>
+  <input type="text" name="folio" required><br><br>
 
-  <label>Alumno:</label><br>
-  <select name="alumno_id" required>
-    {% for a in alumnos %}
-      <option value="{{ a.id }}">{{ a.matricula }} - {{ a.nombre }}</option>
-    {% endfor %}
-  </select><br><br>
+  <label>Nombre:</label><br>
+  <input type="text" name="nombre" required><br><br>
+
+  <label>Teléfono:</label><br>
+  <input type="text" name="telefono"><br><br>
+
+  <label>Fecha de nacimiento:</label><br>
+  <input type="date" name="fecha_nacimiento"><br><br>
 
   <label>Notas:</label><br>
   <textarea name="notas"></textarea><br><br>
 
-  <button type="submit">Guardar Cita</button>
+  <button type="submit">Guardar Paciente</button>
 </form>
 {% endblock %}
