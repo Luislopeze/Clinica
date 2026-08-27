@@ -75,16 +75,22 @@ def listar_alumnos():
     return render_template("alumnos.html", alumnos=alumnos)
 
 # ---------------- CITAS ----------------
-@app.route("/formulario_cita")
-def formulario_cita():
-    pacientes = Paciente.query.all()
-    alumnos = Alumno.query.all()
-    return render_template("formulario_cita.html", pacientes=pacientes, alumnos=alumnos)
-
 @app.route("/cita", methods=["POST"])
 def agregar_cita():
+    # El valor viene como: "Lunes 12:00-14:00 Prótesis Removible"
+    horario = request.form["horario"]
+    partes = horario.split(" ")
+
+    dia = partes[0]  # Lunes, Martes, etc.
+    horas = partes[1]  # "12:00-14:00"
+    hora_inicio, hora_fin = horas.split("-")
+    clinica = " ".join(partes[2:])  # Prótesis Removible, Clínica Integral, etc.
+
     nueva_cita = Cita(
-        fecha=request.form["fecha"],
+        dia=dia,
+        hora_inicio=hora_inicio,
+        hora_fin=hora_fin,
+        clinica=clinica,
         paciente_id=request.form["paciente_id"],
         alumno_id=request.form["alumno_id"],
         notas=request.form.get("notas")
@@ -93,7 +99,3 @@ def agregar_cita():
     db.session.commit()
     return redirect(url_for("listar_citas"))
 
-@app.route("/citas")
-def listar_citas():
-    citas = Cita.query.all()
-    return render_template("citas.html", citas=citas)
