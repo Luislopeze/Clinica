@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Registrar Cita</h2>
+<form action="{{ url_for('agregar_cita') }}" method="post">
+  <label>Fecha y hora:</label><br>
+  <input type="datetime-local" name="fecha" required><br><br>
+
+  <label>Paciente:</label><br>
+  <select name="paciente_id" required>
+    {% for p in pacientes %}
+      <option value="{{ p.id }}">{{ p.folio }} - {{ p.nombre }}</option>
+    {% endfor %}
+  </select><br><br>
+
+  <label>Alumno:</label><br>
+  <select name="alumno_id" required>
+    {% for a in alumnos %}
+      <option value="{{ a.id }}">{{ a.matricula }} - {{ a.nombre }}</option>
+    {% endfor %}
+  </select><br><br>
+
+  <label>Notas:</label><br>
+  <textarea name="notas"></textarea><br><br>
+
+  <button type="submit">Guardar Cita</button>
+</form>
+{% endblock %}
