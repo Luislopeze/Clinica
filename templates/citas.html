@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Lista de Citas</h2>
+<ul>
+  {% for c in citas %}
+    <li>{{ c.fecha }} - Paciente ID: {{ c.paciente_id }} - Alumno ID: {{ c.alumno_id }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
