@@ -4,7 +4,7 @@ db = SQLAlchemy()
 
 class Paciente(db.Model):
     __tablename__ = 'pacientes'
-    folio = db.Column(db.String(20), primary_key=True)
+    folio = db.Column(db.String(20), primary_key=True)   # Ej: EXP-00125
     nombre = db.Column(db.String(100), nullable=False)
     telefono = db.Column(db.String(20))
     fecha_nacimiento = db.Column(db.Date)
