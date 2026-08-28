@@ -26,9 +26,16 @@
             </select>
         </div>
 
+        <!-- Fecha -->
+        <div class="mb-3">
+            <label class="fw-bold">Fecha *</label>
+            <input type="date" name="fecha" class="form-control" required>
+            <small class="text-muted">Solo se permiten días válidos según la clínica seleccionada.</small>
+        </div>
+
         <!-- Horario -->
         <div class="mb-3">
-            <label class="fw-bold">Horario disponible *</label>
+            <label class="fw-bold">Horario *</label>
             <select id="horario" name="horario" class="form-select" required>
                 <option selected disabled>Selecciona un horario</option>
             </select>
@@ -60,11 +67,12 @@
         const clinicaSeleccionada = document.getElementById("clinica").value;
         const selectHorario = document.getElementById("horario");
         selectHorario.innerHTML = '<option selected disabled>Selecciona un horario</option>';
-        horarios[clinicaSeleccionada].forEach(h => {
+        const dias = horarios[clinicaSeleccionada];
+        for (const dia in dias) {
             const opt = document.createElement("option");
-            opt.textContent = h;
+            opt.textContent = dia + " " + dias[dia];
             selectHorario.appendChild(opt);
-        });
+        }
     }
 </script>
 {% endblock %}
