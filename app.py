@@ -1,14 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
+from datetime import date
 
 app = Flask(__name__)
 
-# Lista de pacientes (simulada en memoria)
+# Datos simulados
 pacientes = []
-
-# Lista de citas
 citas = []
 
-# Clínicas y horarios
 clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
 horarios = {
     "Clínica Integral": [
@@ -29,8 +27,14 @@ horarios = {
 }
 
 @app.route("/")
-def index():
-    return redirect(url_for("agenda"))
+def inicio():
+    hoy = date.today().strftime("%Y-%m-%d")
+    odontologos = [
+        {"nombre": "Luis", "citas": sum(1 for c in citas if "Luis" in c.get("clinica", ""))},
+        {"nombre": "Angie", "citas": sum(1 for c in citas if "Angie" in c.get("clinica", ""))}
+    ]
+    citas_hoy = [c for c in citas if hoy in c.get("horario", "")]
+    return render_template("inicio.html", hoy=hoy, odontologos=odontologos, citas_hoy=citas_hoy)
 
 @app.route("/agenda")
 def agenda():
@@ -65,5 +69,5 @@ def nueva_cita():
         horario = request.form["horario"]
         notas = request.form.get("notas", "")
         citas.append({"paciente": paciente, "clinica": clinica, "horario": horario, "notas": notas})
-        return redirect(url_for("agenda"))
+        return redirect(url_for("inicio"))
     return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=[p["nombre"] for p in pacientes])
