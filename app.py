@@ -11,6 +11,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://elsince:KMKUCB87zO04U3RjqN
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 # 🔧 Paso 4: Definición de modelos (tablas)
 class Paciente(db.Model):
