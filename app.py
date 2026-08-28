@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from datetime import date
 
 app = Flask(__name__)
-app.secret_key = "clinica_secret"  # Necesario para mensajes flash
+app.secret_key = "clinica_secret"
 
 # Datos simulados
 pacientes = []
