@@ -7,6 +7,7 @@ app.secret_key = "clinica_secret"
 # Datos simulados
 pacientes = []
 citas = []
+historial = []
 
 clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
 horarios = {
@@ -41,6 +42,10 @@ def inicio():
 def agenda():
     return render_template("agenda.html", citas=citas)
 
+@app.route("/historial")
+def historial_consultas():
+    return render_template("historial.html", historial=historial)
+
 @app.route("/pacientes")
 def lista_pacientes():
     return render_template("pacientes.html", pacientes=pacientes)
@@ -48,24 +53,20 @@ def lista_pacientes():
 @app.route("/nuevo_paciente", methods=["GET", "POST"])
 def nuevo_paciente():
     if request.method == "POST":
-        try:
-            folio_num = request.form["folio"]
-            folio = f"EXP-{folio_num}"
-            nombre = request.form["nombre"]
-            telefono = request.form["telefono"]
-            nacimiento = request.form["nacimiento"]
-            notas = request.form["notas"]
-            pacientes.append({
-                "folio": folio,
-                "nombre": nombre,
-                "telefono": telefono,
-                "nacimiento": nacimiento,
-                "notas": notas
-            })
-            return redirect(url_for("lista_pacientes"))
-        except Exception as e:
-            flash(f"Error al guardar paciente: {e}")
-            return redirect(url_for("nuevo_paciente"))
+        folio_num = request.form["folio"]
+        folio = f"EXP-{folio_num}"
+        nombre = request.form["nombre"]
+        telefono = request.form["telefono"]
+        nacimiento = request.form["nacimiento"]
+        notas = request.form["notas"]
+        pacientes.append({
+            "folio": folio,
+            "nombre": nombre,
+            "telefono": telefono,
+            "nacimiento": nacimiento,
+            "notas": notas
+        })
+        return redirect(url_for("lista_pacientes"))
     return render_template("nuevo_paciente.html")
 
 @app.route("/eliminar_paciente/<int:index>")
@@ -94,7 +95,24 @@ def nueva_cita():
             "clinica": clinica,
             "horario": horario,
             "atendido_por": atendido_por,
-            "notas": notas
+            "notas": notas,
+            "estado": "En progreso"
         })
         return redirect(url_for("inicio"))
     return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=[p["nombre"] for p in pacientes])
+
+@app.route("/actualizar_cita/<int:index>/<accion>")
+def actualizar_cita(index, accion):
+    if 0 <= index < len(citas):
+        cita = citas[index]
+        if accion == "eliminar":
+            citas.pop(index)
+        elif accion == "completado":
+            cita["estado"] = "Completado"
+            historial.append(cita)
+            citas.pop(index)
+        elif accion == "reprogramar":
+            cita["estado"] = "Reprogramada"
+        elif accion == "progreso":
+            cita["estado"] = "En progreso"
+    return redirect(url_for("agenda"))
