@@ -4,60 +4,70 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "clinica_secret"
 
-# Paciente de prueba
-pacientes = [{
-    "folio": "EXP-001",
-    "nombre": "Juan Pérez",
-    "telefono": "3111234567",
-    "nacimiento": "2000-05-12",
-    "notas": "Paciente de prueba"
-}]
-
+# Datos en memoria
+pacientes = []
 citas = []
 historial = []
 
-clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
+clinicas = ["Integral", "Prótesis Total"]
+
+# Horarios por clínica
 horarios = {
-    "Clínica Integral": {
-        "Lunes": "4pm - 6pm",
-        "Martes": "4pm - 6pm",
-        "Miércoles": "10am - 12pm",
-        "Jueves": "4pm - 6pm",
-        "Viernes": "10am - 12pm"
+    "Integral": {
+        "Lunes": "10:00",
+        "Martes": "10:00",
+        "Miércoles": "10:00",
+        "Jueves": "10:00",
+        "Viernes": "10:00"
     },
     "Prótesis Total": {
-        "Miércoles": "4pm - 6pm",
-        "Viernes": "12pm - 2pm"
-    },
-    "Prótesis Removible": {
-        "Lunes": "12pm - 2pm",
-        "Miércoles": "12pm - 2pm"
+        "Lunes": "12:00",
+        "Martes": "12:00",
+        "Miércoles": "12:00",
+        "Jueves": "12:00",
+        "Viernes": "12:00"
     }
 }
 
+# Traducción días
+dias_es = {
+    "Monday": "Lunes",
+    "Tuesday": "Martes",
+    "Wednesday": "Miércoles",
+    "Thursday": "Jueves",
+    "Friday": "Viernes",
+    "Saturday": "Sábado",
+    "Sunday": "Domingo"
+}
+
+# Dashboard inicial
+@app.route("/")
+def dashboard():
+    return render_template("dashboard.html", pacientes=pacientes, citas=citas, historial=historial, clinicas=clinicas)
+
+# Agenda
 @app.route("/agenda")
 def agenda():
-    # Ordenar citas por fecha (más próxima primero)
-    citas_ordenadas = sorted(citas, key=lambda x: x["fecha"])
-    return render_template("agenda.html", citas=citas_ordenadas)
+    return render_template("agenda.html", citas=citas)
 
+# Historial
 @app.route("/historial")
-def historial_consultas():
+def historial_view():
     return render_template("historial.html", historial=historial)
 
+# Pacientes
 @app.route("/pacientes")
-def lista_pacientes():
+def pacientes_view():
     return render_template("pacientes.html", pacientes=pacientes)
 
 @app.route("/nuevo_paciente", methods=["GET", "POST"])
 def nuevo_paciente():
     if request.method == "POST":
-        folio_num = request.form["folio"]
-        folio = f"EXP-{folio_num}"
+        folio = "EXP-" + request.form["folio"]
         nombre = request.form["nombre"]
         telefono = request.form["telefono"]
         nacimiento = request.form["nacimiento"]
-        notas = request.form["notas"]
+        notas = request.form.get("notas", "")
         pacientes.append({
             "folio": folio,
             "nombre": nombre,
@@ -65,15 +75,16 @@ def nuevo_paciente():
             "nacimiento": nacimiento,
             "notas": notas
         })
-        return redirect(url_for("lista_pacientes"))
+        return redirect(url_for("pacientes_view"))
     return render_template("nuevo_paciente.html")
 
 @app.route("/eliminar_paciente/<int:index>")
 def eliminar_paciente(index):
     if 0 <= index < len(pacientes):
         pacientes.pop(index)
-    return redirect(url_for("lista_pacientes"))
+    return redirect(url_for("pacientes_view"))
 
+# Nueva cita
 @app.route("/nueva_cita", methods=["GET", "POST"])
 def nueva_cita():
     if request.method == "POST":
@@ -86,15 +97,6 @@ def nueva_cita():
 
         # Validar día de la semana
         dia_semana = datetime.strptime(fecha, "%Y-%m-%d").strftime("%A")
-        dias_es = {
-            "Monday": "Lunes",
-            "Tuesday": "Martes",
-            "Wednesday": "Miércoles",
-            "Thursday": "Jueves",
-            "Friday": "Viernes",
-            "Saturday": "Sábado",
-            "Sunday": "Domingo"
-        }
         dia_es = dias_es[dia_semana]
 
         if dia_es not in horarios[clinica]:
@@ -115,23 +117,24 @@ def nueva_cita():
             "atendido_por": atendido_por,
             "notas": notas
         })
-
-        # 🔹 Redirige a Agenda en lugar de Inicio
         return redirect(url_for("agenda"))
 
     return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=[p["nombre"] for p in pacientes])
 
+# Actualizar cita
 @app.route("/actualizar_cita/<int:index>/<accion>")
 def actualizar_cita(index, accion):
     if 0 <= index < len(citas):
         cita = citas[index]
-        if accion == "eliminar":
-            citas.pop(index)
-        elif accion == "completado":
+        if accion == "completado":
             historial.append(cita)
             citas.pop(index)
-        elif accion == "reprogramar":
-            # Borra la cita y redirige a nueva cita
+        elif accion == "eliminar":
             citas.pop(index)
+        elif accion == "reprogramar":
+            flash("🔄 Reprograma la cita seleccionando nueva fecha y horario.")
             return redirect(url_for("nueva_cita"))
     return redirect(url_for("agenda"))
+
+if __name__ == "__main__":
+    app.run(debug=True)
