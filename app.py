@@ -10,31 +10,29 @@ citas = []
 historial = []
 
 # Clínicas disponibles
-clinicas = ["Integral", "Prótesis Total", "Prótesis Removible"]
+clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
 
-# Horarios por clínica
+# Horarios por día y clínica
 horarios = {
-    "Integral": {
-        "Lunes": "10:00",
-        "Martes": "10:00",
-        "Miércoles": "10:00",
-        "Jueves": "10:00",
-        "Viernes": "10:00"
-    },
-    "Prótesis Total": {
-        "Lunes": "12:00",
-        "Martes": "12:00",
-        "Miércoles": "12:00",
-        "Jueves": "12:00",
-        "Viernes": "12:00"
-    },
-    "Prótesis Removible": {
-        "Lunes": "16:00",
-        "Martes": "16:00",
-        "Miércoles": "16:00",
-        "Jueves": "16:00",
-        "Viernes": "16:00"
-    }
+    "Lunes": [
+        {"clinica": "Prótesis Removible", "horario": "12:00-14:00"},
+        {"clinica": "Clínica Integral", "horario": "16:00-18:00"}
+    ],
+    "Martes": [
+        {"clinica": "Clínica Integral", "horario": "16:00-18:00"}
+    ],
+    "Miércoles": [
+        {"clinica": "Clínica Integral", "horario": "10:00-12:00"},
+        {"clinica": "Prótesis Removible", "horario": "12:00-14:00"},
+        {"clinica": "Prótesis Total", "horario": "16:00-18:00"}
+    ],
+    "Jueves": [
+        {"clinica": "Clínica Integral", "horario": "16:00-18:00"}
+    ],
+    "Viernes": [
+        {"clinica": "Clínica Integral", "horario": "10:00-12:00"},
+        {"clinica": "Prótesis Total", "horario": "12:00-14:00"}
+    ]
 }
 
 # Traducción días
@@ -107,8 +105,15 @@ def nueva_cita():
         dia_semana = datetime.strptime(fecha, "%Y-%m-%d").strftime("%A")
         dia_es = dias_es[dia_semana]
 
-        if dia_es not in horarios[clinica]:
-            flash(f"⚠️ La clínica {clinica} no atiende el día {dia_es}.")
+        # Validar que la clínica atienda ese día
+        valido = False
+        for h in horarios.get(dia_es, []):
+            if h["clinica"] == clinica and h["horario"] == horario:
+                valido = True
+                break
+
+        if not valido:
+            flash(f"⚠️ La clínica {clinica} no atiende el día {dia_es} en ese horario.")
             return redirect(url_for("nueva_cita"))
 
         # Validar cruce de citas
