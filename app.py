@@ -3,17 +3,16 @@ from models import db, Paciente, Alumno, Cita
 
 app = Flask(__name__)
 
-# Conexión a tu base PostgreSQL en Render
+# Conexión a tu base de datos Render (usa la URL que ya tienes)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://clinica_db_ov6b_user:l2yxIhbi371H74I5HVh8B69581fJ1iOI@dpg-da8b3q0ae00c73cd5sog-a/clinica_db_ov6b"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-@app.before_request
-def create_tables_once():
-    if not hasattr(app, 'tables_created'):
-        db.create_all()
-        app.tables_created = True
+# 🔧 Crea las tablas automáticamente al iniciar la app
+@app.before_first_request
+def crear_tablas():
+    db.create_all()
 
 @app.route("/")
 def index():
@@ -26,8 +25,8 @@ def formulario():
 
 @app.route("/paciente", methods=["POST"])
 def agregar_paciente():
-    numero_folio = request.form["folio"]   # usuario solo escribe el número
-    folio_completo = f"EXP-{numero_folio}" # el sistema agrega "EXP-"
+    numero_folio = request.form["folio"]
+    folio_completo = f"EXP-{numero_folio}"
 
     existente = Paciente.query.filter_by(folio=folio_completo).first()
     if existente:
@@ -83,22 +82,21 @@ def formulario_cita():
 
 @app.route("/cita", methods=["POST"])
 def agregar_cita():
-    # El valor viene como: "Lunes 12:00-14:00 Prótesis Removible"
     horario = request.form["horario"]
     partes = horario.split(" ")
 
-    dia = partes[0]  # Lunes, Martes, etc.
-    horas = partes[1]  # "12:00-14:00"
+    dia = partes[0]
+    horas = partes[1]
     hora_inicio, hora_fin = horas.split("-")
-    clinica = " ".join(partes[2:])  # Prótesis Removible, Clínica Integral, etc.
+    clinica = " ".join(partes[2:])
 
     nueva_cita = Cita(
         dia=dia,
         hora_inicio=hora_inicio,
         hora_fin=hora_fin,
         clinica=clinica,
-        paciente_id=int(request.form["paciente_id"]),  # 🔧 convertir a entero
-        alumno_id=int(request.form["alumno_id"]),      # 🔧 convertir a entero
+        paciente_id=int(request.form["paciente_id"]),
+        alumno_id=int(request.form["alumno_id"]),
         notas=request.form.get("notas")
     )
     db.session.add(nueva_cita)
