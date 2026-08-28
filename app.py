@@ -9,9 +9,8 @@ pacientes = []
 citas = []
 historial = []
 
-clinicas = ["Integral", "Prótesis Total"]
+clinicas = ["Integral", "Prótesis Total", "Prótesis Removible"]
 
-# Horarios por clínica
 horarios = {
     "Integral": {
         "Lunes": "10:00",
@@ -26,7 +25,16 @@ horarios = {
         "Miércoles": "12:00",
         "Jueves": "12:00",
         "Viernes": "12:00"
+    },
+    "Prótesis Removible": {
+        "Lunes": "16:00",
+        "Martes": "16:00",
+        "Miércoles": "16:00",
+        "Jueves": "16:00",
+        "Viernes": "16:00"
     }
+}
+
 }
 
 # Traducción días
