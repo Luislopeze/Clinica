@@ -11,7 +11,7 @@
             <th>Folio</th>
             <th>Nombre</th>
             <th>Teléfono</th>
-            <th>Nacimiento</th>
+            <th>Fecha de nacimiento</th>
             <th>Notas</th>
             <th>Acciones</th>
         </tr>
@@ -25,7 +25,11 @@
             <td>{{ p.nacimiento }}</td>
             <td>{{ p.notas }}</td>
             <td>
-                <a href="/eliminar_paciente/{{ loop.index0 }}" class="btn btn-danger btn-sm">Eliminar</a>
+                <a href="/eliminar_paciente/{{ loop.index0 }}" 
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('¿Seguro que deseas eliminar este paciente?')">
+                   Eliminar
+                </a>
             </td>
         </tr>
         {% endfor %}
