@@ -3,7 +3,8 @@
 <h3 class="fw-bold">Agenda</h3>
 
 {% if citas %}
-<table class="table table-striped shadow-sm">
+<div class="table-responsive">
+<table class="table table-striped table-sm shadow-sm">
     <thead class="table-light">
         <tr>
             <th>Paciente</th>
@@ -24,17 +25,17 @@
             <td>{{ c.atendido_por }}</td>
             <td>
                 <a href="/actualizar_cita/{{ loop.index0 }}/reprogramar" 
-                   class="btn btn-warning btn-sm"
+                   class="btn btn-warning btn-sm d-block d-md-inline mb-1"
                    onclick="return confirm('¿Seguro que deseas reprogramar esta cita?')">
                    Reprogramar
                 </a>
                 <a href="/actualizar_cita/{{ loop.index0 }}/completado" 
-                   class="btn btn-success btn-sm"
+                   class="btn btn-success btn-sm d-block d-md-inline mb-1"
                    onclick="return confirm('¿Seguro que deseas marcar esta cita como completada?')">
                    Completado
                 </a>
                 <a href="/actualizar_cita/{{ loop.index0 }}/eliminar" 
-                   class="btn btn-danger btn-sm"
+                   class="btn btn-danger btn-sm d-block d-md-inline mb-1"
                    onclick="return confirm('¿Seguro que deseas eliminar esta cita?')">
                    Eliminar
                 </a>
@@ -43,6 +44,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <p class="text-muted">No hay citas registradas.</p>
 {% endif %}
