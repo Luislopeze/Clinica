@@ -1,55 +1,52 @@
 {% extends "base.html" %}
 {% block content %}
-<h3 class="fw-bold">Nueva cita</h3>
+<h3 class="fw-bold">Agendar nueva cita</h3>
 
 <div class="card shadow-sm p-4">
     <form method="post">
+
         <!-- Paciente -->
         <div class="mb-3">
             <label class="fw-bold">Paciente *</label>
-            <select name="paciente" class="form-select" required>
-                <option selected disabled>Selecciona un paciente</option>
+            <select name="paciente" class="form-control" required>
                 {% for p in pacientes %}
-                <option>{{ p }}</option>
+                <option value="{{ p }}">{{ p }}</option>
                 {% endfor %}
             </select>
         </div>
 
-        <!-- Clínica -->
+        <!-- Clínica y horario -->
         <div class="mb-3">
-            <label class="fw-bold">Clínica *</label>
-            <select id="clinica" name="clinica" class="form-select" required onchange="actualizarHorarios()">
-                <option selected disabled>Selecciona una clínica</option>
-                {% for c in clinicas %}
-                <option>{{ c }}</option>
-                {% endfor %}
+            <label class="fw-bold">Selecciona clínica y horario *</label>
+            <select name="clinica" class="form-control mb-2" required>
+                <option value="Clínica Integral">Clínica Integral</option>
+                <option value="Prótesis Total">Prótesis Total</option>
+                <option value="Prótesis Removible">Prótesis Removible</option>
             </select>
-            <small class="text-muted">La clínica solo atiende ciertos días.</small>
+
+            <select name="horario" class="form-control" required>
+                <option value="Lunes 12:00-14:00 Prótesis Removible">Lunes 12pm-2pm - Prótesis Removible</option>
+                <option value="Lunes 16:00-18:00 Clínica Integral">Lunes 4pm-6pm - Clínica Integral</option>
+                <option value="Martes 16:00-18:00 Clínica Integral">Martes 4pm-6pm - Clínica Integral</option>
+                <option value="Miércoles 10:00-12:00 Clínica Integral">Miércoles 10am-12pm - Clínica Integral</option>
+                <option value="Miércoles 12:00-14:00 Prótesis Removible">Miércoles 12pm-2pm - Prótesis Removible</option>
+                <option value="Miércoles 16:00-18:00 Prótesis Total">Miércoles 4pm-6pm - Prótesis Total</option>
+                <option value="Jueves 16:00-18:00 Clínica Integral">Jueves 4pm-6pm - Clínica Integral</option>
+                <option value="Viernes 10:00-12:00 Clínica Integral">Viernes 10am-12pm - Clínica Integral</option>
+                <option value="Viernes 12:00-14:00 Prótesis Total">Viernes 12pm-2pm - Prótesis Total</option>
+            </select>
         </div>
 
         <!-- Fecha -->
         <div class="mb-3">
             <label class="fw-bold">Fecha *</label>
             <input type="date" name="fecha" class="form-control" required>
-            <small class="text-muted">Solo se permiten días válidos según la clínica seleccionada.</small>
         </div>
 
-        <!-- Horario -->
-        <div class="mb-3">
-            <label class="fw-bold">Horario *</label>
-            <select id="horario" name="horario" class="form-select" required>
-                <option selected disabled>Selecciona un horario</option>
-            </select>
-        </div>
-
-        <!-- Atendido por -->
+        <!-- Alumno / Atendido por -->
         <div class="mb-3">
             <label class="fw-bold">Atendido por *</label>
-            <select name="atendido_por" class="form-select" required>
-                <option selected disabled>Selecciona</option>
-                <option>Luis</option>
-                <option>Angie</option>
-            </select>
+            <input type="text" name="atendido_por" class="form-control" placeholder="Nombre del alumno" required>
         </div>
 
         <!-- Notas -->
@@ -58,22 +55,7 @@
             <textarea name="notas" class="form-control" rows="3"></textarea>
         </div>
 
-        <button class="btn btn-primary w-100">Agendar cita</button>
+        <button class="btn btn-primary w-100">Guardar cita</button>
     </form>
 </div>
-
-<script>
-    const horarios = {{ horarios | tojson }};
-    function actualizarHorarios() {
-        const clinicaSeleccionada = document.getElementById("clinica").value;
-        const selectHorario = document.getElementById("horario");
-        selectHorario.innerHTML = '<option selected disabled>Selecciona un horario</option>';
-        const dias = horarios[clinicaSeleccionada];
-        for (const dia in dias) {
-            const opt = document.createElement("option");
-            opt.textContent = dia + " " + dias[dia];
-            selectHorario.appendChild(opt);
-        }
-    }
-</script>
 {% endblock %}
