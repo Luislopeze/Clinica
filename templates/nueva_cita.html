@@ -15,25 +15,22 @@
             </select>
         </div>
 
-        <!-- Clínica y horario -->
+        <!-- Clínica -->
         <div class="mb-3">
-            <label class="fw-bold">Selecciona clínica y horario *</label>
-            <select name="clinica" class="form-control mb-2" required>
+            <label class="fw-bold">Clínica *</label>
+            <select id="clinicaSelect" name="clinica" class="form-control" required>
+                <option value="">-- Selecciona clínica --</option>
                 <option value="Clínica Integral">Clínica Integral</option>
                 <option value="Prótesis Total">Prótesis Total</option>
                 <option value="Prótesis Removible">Prótesis Removible</option>
             </select>
+        </div>
 
-            <select name="horario" class="form-control" required>
-                <option value="Lunes 12:00-14:00 Prótesis Removible">Lunes 12pm-2pm - Prótesis Removible</option>
-                <option value="Lunes 16:00-18:00 Clínica Integral">Lunes 4pm-6pm - Clínica Integral</option>
-                <option value="Martes 16:00-18:00 Clínica Integral">Martes 4pm-6pm - Clínica Integral</option>
-                <option value="Miércoles 10:00-12:00 Clínica Integral">Miércoles 10am-12pm - Clínica Integral</option>
-                <option value="Miércoles 12:00-14:00 Prótesis Removible">Miércoles 12pm-2pm - Prótesis Removible</option>
-                <option value="Miércoles 16:00-18:00 Prótesis Total">Miércoles 4pm-6pm - Prótesis Total</option>
-                <option value="Jueves 16:00-18:00 Clínica Integral">Jueves 4pm-6pm - Clínica Integral</option>
-                <option value="Viernes 10:00-12:00 Clínica Integral">Viernes 10am-12pm - Clínica Integral</option>
-                <option value="Viernes 12:00-14:00 Prótesis Total">Viernes 12pm-2pm - Prótesis Total</option>
+        <!-- Horario -->
+        <div class="mb-3">
+            <label class="fw-bold">Horario *</label>
+            <select id="horarioSelect" name="horario" class="form-control" required>
+                <option value="">-- Selecciona horario --</option>
             </select>
         </div>
 
@@ -58,4 +55,39 @@
         <button class="btn btn-primary w-100">Guardar cita</button>
     </form>
 </div>
+
+<script>
+const horariosPorClinica = {
+    "Clínica Integral": [
+        "Lunes 16:00-18:00",
+        "Martes 16:00-18:00",
+        "Miércoles 10:00-12:00",
+        "Jueves 16:00-18:00",
+        "Viernes 10:00-12:00"
+    ],
+    "Prótesis Total": [
+        "Miércoles 16:00-18:00",
+        "Viernes 12:00-14:00"
+    ],
+    "Prótesis Removible": [
+        "Lunes 12:00-14:00",
+        "Miércoles 12:00-14:00"
+    ]
+};
+
+document.getElementById("clinicaSelect").addEventListener("change", function() {
+    const clinica = this.value;
+    const horarioSelect = document.getElementById("horarioSelect");
+    horarioSelect.innerHTML = '<option value="">-- Selecciona horario --</option>';
+
+    if (horariosPorClinica[clinica]) {
+        horariosPorClinica[clinica].forEach(h => {
+            const opt = document.createElement("option");
+            opt.value = h;
+            opt.textContent = h;
+            horarioSelect.appendChild(opt);
+        });
+    }
+});
+</script>
 {% endblock %}
