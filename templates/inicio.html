@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold">Agenda de hoy</h3>
+<p>{{ hoy }}</p>
+
+<div class="row">
+    {% for o in odontologos %}
+    <div class="col-md-6 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h6 class="fw-bold">{{ o.nombre }}</h6>
+                <h3>{{ o.citas }}</h3>
+                <p class="text-muted">citas hoy</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="card mt-4 shadow-sm">
+    <div class="card-body">
+        <h5 class="fw-bold">Citas de hoy</h5>
+        {% if citas_hoy %}
+            <ul>
+                {% for c in citas_hoy %}
+                <li>{{ c.paciente }} — {{ c.clinica }} — {{ c.horario }} — Atendido por {{ c.atendido_por }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No hay citas registradas para hoy.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
