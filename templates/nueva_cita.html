@@ -1,93 +1,59 @@
-{% extends "base.html" %}
-{% block content %}
-<h3 class="fw-bold">Agendar nueva cita</h3>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Cita</title>
+</head>
+<body>
+    <h1>Registrar nueva cita</h1>
 
-<div class="card shadow-sm p-4">
-    <form method="post">
-
+    <form method="POST" action="{{ url_for('nueva_cita') }}">
         <!-- Paciente -->
-        <div class="mb-3">
-            <label class="fw-bold">Paciente *</label>
-            <select name="paciente" class="form-control" required>
-                {% for p in pacientes %}
-                <option value="{{ p }}">{{ p }}</option>
-                {% endfor %}
-            </select>
-        </div>
+        <label for="paciente">Paciente:</label>
+        <select name="paciente" id="paciente" required>
+            {% for paciente in pacientes %}
+                <option value="{{ paciente.id }}">{{ paciente.nombre }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
 
         <!-- Clínica -->
-        <div class="mb-3">
-            <label class="fw-bold">Clínica *</label>
-            <select id="clinicaSelect" name="clinica" class="form-control" required>
-                <option value="">-- Selecciona clínica --</option>
-                <option value="Clínica Integral">Clínica Integral</option>
-                <option value="Prótesis Total">Prótesis Total</option>
-                <option value="Prótesis Removible">Prótesis Removible</option>
-            </select>
-        </div>
-
-        <!-- Horario -->
-        <div class="mb-3">
-            <label class="fw-bold">Horario *</label>
-            <select id="horarioSelect" name="horario" class="form-control" required>
-                <option value="">-- Selecciona horario --</option>
-            </select>
-        </div>
+        <label for="clinica">Clínica:</label>
+        <select name="clinica" id="clinica" required>
+            {% for clinica in clinicas %}
+                <option value="{{ clinica }}">{{ clinica }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
 
         <!-- Fecha -->
-        <div class="mb-3">
-            <label class="fw-bold">Fecha *</label>
-            <input type="date" name="fecha" class="form-control" required>
-        </div>
+        <label for="fecha">Fecha:</label>
+        <input type="date" name="fecha" id="fecha" required>
+        <br><br>
 
-        <!-- Alumno / Atendido por -->
-        <div class="mb-3">
-            <label class="fw-bold">Atendido por *</label>
-            <input type="text" name="atendido_por" class="form-control" placeholder="Nombre del alumno" required>
-        </div>
+        <!-- Horario -->
+        <label for="horario">Horario:</label>
+        <input type="time" name="horario" id="horario" required>
+        <br><br>
+
+        <!-- Atendido por -->
+        <label for="atendido_por">Atendido por:</label>
+        <select name="atendido_por" id="atendido_por" required>
+            {% for doctor in doctores %}
+                <option value="{{ doctor }}">{{ doctor }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
 
         <!-- Notas -->
-        <div class="mb-3">
-            <label class="fw-bold">Notas</label>
-            <textarea name="notas" class="form-control" rows="3"></textarea>
-        </div>
+        <label for="notas">Notas:</label>
+        <textarea name="notas" id="notas"></textarea>
+        <br><br>
 
-        <button class="btn btn-primary w-100">Guardar cita</button>
+        <button type="submit">Guardar cita</button>
     </form>
-</div>
 
-<script>
-const horariosPorClinica = {
-    "Clínica Integral": [
-        "Lunes 16:00-18:00",
-        "Martes 16:00-18:00",
-        "Miércoles 10:00-12:00",
-        "Jueves 16:00-18:00",
-        "Viernes 10:00-12:00"
-    ],
-    "Prótesis Total": [
-        "Miércoles 16:00-18:00",
-        "Viernes 12:00-14:00"
-    ],
-    "Prótesis Removible": [
-        "Lunes 12:00-14:00",
-        "Miércoles 12:00-14:00"
-    ]
-};
-
-document.getElementById("clinicaSelect").addEventListener("change", function() {
-    const clinica = this.value;
-    const horarioSelect = document.getElementById("horarioSelect");
-    horarioSelect.innerHTML = '<option value="">-- Selecciona horario --</option>';
-
-    if (horariosPorClinica[clinica]) {
-        horariosPorClinica[clinica].forEach(h => {
-            const opt = document.createElement("option");
-            opt.value = h;
-            opt.textContent = h;
-            horarioSelect.appendChild(opt);
-        });
-    }
-});
-</script>
-{% endblock %}
+    <br>
+    <a href="{{ url_for('agenda') }}">Volver a la agenda</a>
+</body>
+</html>
