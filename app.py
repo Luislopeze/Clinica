@@ -80,6 +80,32 @@ def nueva_cita():
         atendido_por = request.form["atendido_por"]
         notas = request.form.get("notas", "")
 
+        # Validar cruce de citas
+        for c in citas:
+            if c["fecha"] == fecha and c["clinica"] == clinica and c["horario"] == horario:
+                flash("⚠️ Ya existe una cita en ese horario y clínica.")
+                return redirect(url_for("nueva_cita"))
+
+        citas.append({
+            "paciente": paciente,
+            "clinica": clinica,
+            "fecha": fecha,
+            "horario": horario,
+            "atendido_por": atendido_por,
+            "notas": notas
+        })
+
+        # 🔹 Ahora redirige a Agenda en lugar de Inicio
+        return redirect(url_for("agenda"))
+
+    return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=[p["nombre"] for p in pacientes])
+
+@app.route("/agenda")
+def agenda():
+    # 🔹 Ordenar citas por fecha (más próxima primero)
+    citas_ordenadas = sorted(citas, key=lambda x: x["fecha"])
+    return render_template("agenda.html", citas=citas_ordenadas)
+
         # Validar día de la semana
         dia_semana = datetime.strptime(fecha, "%Y-%m-%d").strftime("%A")
         dias_es = {"Monday":"Lunes","Tuesday":"Martes","Wednesday":"Miércoles","Thursday":"Jueves","Friday":"Viernes","Saturday":"Sábado","Sunday":"Domingo"}
