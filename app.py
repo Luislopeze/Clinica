@@ -118,8 +118,8 @@ def nueva_cita():
 
 # Historial
 @app.route("/historial")
-def historial_view():
-    historial = Historial.query.all()
+def historial_consultas():
+    historial = Historial.query.all()  # o tu método para obtener los registros
     return render_template("historial.html", historial=historial)
 
 @app.route("/actualizar_cita/<int:id>/<accion>")
