@@ -9,10 +9,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-# 🔧 Crea las tablas automáticamente
 @app.before_first_request
 def crear_tablas():
-    db.create_all()
+    db.drop_all()   # 🔧 borra todas las tablas viejas
+    db.create_all() # 🔧 crea las tablas nuevas según models.py
 
 @app.route("/")
 def index():
