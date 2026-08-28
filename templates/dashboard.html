@@ -1,52 +1,98 @@
-{% extends "base.html" %}
-{% block content %}
-<h3 class="fw-bold">Panel de control</h3>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Panel principal</h1>
 
-<div class="row">
-    <!-- Total de pacientes -->
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm text-center">
-            <div class="card-body">
-                <h5 class="card-title">👥 Pacientes</h5>
-                <p class="display-6">{{ pacientes|length }}</p>
-                <small class="text-muted">Registrados en el sistema</small>
-            </div>
-        </div>
-    </div>
+    <!-- Sección de pacientes -->
+    <h2>Pacientes registrados</h2>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Folio</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Nacimiento</th>
+                <th>Notas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{ paciente.folio }}</td>
+                <td>{{ paciente.nombre }}</td>
+                <td>{{ paciente.telefono }}</td>
+                <td>{{ paciente.nacimiento.strftime("%d/%m/%Y") if paciente.nacimiento else "" }}</td>
+                <td>{{ paciente.notas }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="{{ url_for('nuevo_paciente') }}">Registrar nuevo paciente</a>
 
-    <!-- Citas activas -->
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm text-center">
-            <div class="card-body">
-                <h5 class="card-title">📅 Citas activas</h5>
-                <p class="display-6">{{ citas|length }}</p>
-                <small class="text-muted">Pendientes en agenda</small>
-            </div>
-        </div>
-    </div>
+    <!-- Sección de citas -->
+    <h2>Citas pendientes</h2>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Paciente</th>
+                <th>Clínica</th>
+                <th>Fecha</th>
+                <th>Horario</th>
+                <th>Atendido por</th>
+                <th>Notas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cita in citas %}
+            <tr>
+                <td>{{ cita.paciente.nombre }}</td>
+                <td>{{ cita.clinica }}</td>
+                <td>{{ cita.fecha.strftime("%d/%m/%Y") }}</td>
+                <td>{{ cita.horario }}</td>
+                <td>{{ cita.atendido_por }}</td>
+                <td>{{ cita.notas }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="{{ url_for('nueva_cita') }}">Registrar nueva cita</a>
 
-    <!-- Consultas completadas -->
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm text-center">
-            <div class="card-body">
-                <h5 class="card-title">✅ Historial</h5>
-                <p class="display-6">{{ historial|length }}</p>
-                <small class="text-muted">Consultas completadas</small>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- Sección de historial -->
+    <h2>Historial de citas atendidas</h2>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Paciente</th>
+                <th>Clínica</th>
+                <th>Fecha</th>
+                <th>Horario</th>
+                <th>Atendido por</th>
+                <th>Notas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registro in historial %}
+            <tr>
+                <td>{{ registro.paciente.nombre }}</td>
+                <td>{{ registro.clinica }}</td>
+                <td>{{ registro.fecha.strftime("%d/%m/%Y") }}</td>
+                <td>{{ registro.horario }}</td>
+                <td>{{ registro.atendido_por }}</td>
+                <td>{{ registro.notas }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<!-- Distribución por clínica -->
-<h5 class="fw-bold mt-4">Distribución de citas por clínica</h5>
-<ul class="list-group shadow-sm">
-    {% for clinica in clinicas %}
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-        {{ clinica }}
-        <span class="badge bg-primary rounded-pill">
-            {{ citas|selectattr("clinica","equalto",clinica)|list|length }}
-        </span>
-    </li>
-    {% endfor %}
-</ul>
-{% endblock %}
+    <br>
+    <a href="{{ url_for('pacientes_view') }}">Ver todos los pacientes</a> |
+    <a href="{{ url_for('agenda') }}">Ver agenda completa</a> |
+    <a href="{{ url_for('historial_view') }}">Ver historial completo</a>
+</body>
+</html>
