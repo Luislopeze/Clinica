@@ -1,3 +1,14 @@
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.secret_key = "clinica_secret"
+
+# Conexión a PostgreSQL (usa la URL que te dio Render)
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://usuario:password@host:puerto/dbname"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
+
 from flask import Flask, render_template, request, redirect, url_for, flash
 from datetime import datetime
 
