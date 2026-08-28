@@ -2,9 +2,14 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-# Datos simulados
-clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
+# Lista de pacientes (simulada en memoria)
+pacientes = []
 
+# Lista de citas
+citas = []
+
+# Clínicas y horarios
+clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
 horarios = {
     "Clínica Integral": [
         "Lunes 4pm - 6pm",
@@ -23,11 +28,6 @@ horarios = {
     ]
 }
 
-pacientes = ["Juan Pérez", "María López", "Carlos Ruiz"]
-
-# Lista de citas guardadas
-citas = []
-
 @app.route("/")
 def index():
     return redirect(url_for("agenda"))
@@ -40,6 +40,23 @@ def agenda():
 def lista_pacientes():
     return render_template("pacientes.html", pacientes=pacientes)
 
+@app.route("/nuevo_paciente", methods=["GET", "POST"])
+def nuevo_paciente():
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        telefono = request.form["telefono"]
+        nacimiento = request.form["nacimiento"]
+        notas = request.form["notas"]
+        pacientes.append({"nombre": nombre, "telefono": telefono, "nacimiento": nacimiento, "notas": notas})
+        return redirect(url_for("lista_pacientes"))
+    return render_template("nuevo_paciente.html")
+
+@app.route("/eliminar_paciente/<int:index>")
+def eliminar_paciente(index):
+    if 0 <= index < len(pacientes):
+        pacientes.pop(index)
+    return redirect(url_for("lista_pacientes"))
+
 @app.route("/nueva_cita", methods=["GET", "POST"])
 def nueva_cita():
     if request.method == "POST":
@@ -49,4 +66,4 @@ def nueva_cita():
         notas = request.form.get("notas", "")
         citas.append({"paciente": paciente, "clinica": clinica, "horario": horario, "notas": notas})
         return redirect(url_for("agenda"))
-    return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=pacientes)
+    return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=[p["nombre"] for p in pacientes])
