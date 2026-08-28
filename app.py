@@ -48,14 +48,24 @@ def lista_pacientes():
 @app.route("/nuevo_paciente", methods=["GET", "POST"])
 def nuevo_paciente():
     if request.method == "POST":
-        folio_num = request.form["folio"]
-        folio = f"EXP-{folio_num}"
-        nombre = request.form["nombre"]
-        telefono = request.form["telefono"]
-        nacimiento = request.form["nacimiento"]
-        notas = request.form["notas"]
-        pacientes.append({"folio": folio, "nombre": nombre, "telefono": telefono, "nacimiento": nacimiento, "notas": notas})
-        return redirect(url_for("lista_pacientes"))
+        try:
+            folio_num = request.form["folio"]
+            folio = f"EXP-{folio_num}"
+            nombre = request.form["nombre"]
+            telefono = request.form["telefono"]
+            nacimiento = request.form["nacimiento"]
+            notas = request.form["notas"]
+            pacientes.append({
+                "folio": folio,
+                "nombre": nombre,
+                "telefono": telefono,
+                "nacimiento": nacimiento,
+                "notas": notas
+            })
+            return redirect(url_for("lista_pacientes"))
+        except Exception as e:
+            flash(f"Error al guardar paciente: {e}")
+            return redirect(url_for("nuevo_paciente"))
     return render_template("nuevo_paciente.html")
 
 @app.route("/eliminar_paciente/<int:index>")
