@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Lista de Pacientes</h2>
-<ul>
-  {% for p in pacientes %}
-    <li>{{ p.folio }} - {{ p.nombre }} - {{ p.telefono }}</li>
-  {% endfor %}
-</ul>
-{% endblock %}
