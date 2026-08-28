@@ -56,6 +56,7 @@ def pacientes():
 @app.route('/agenda')
 def agenda():
     citas = Cita.query.all()
+    # Pasamos las citas al calendario
     return render_template('agenda.html', citas=citas)
 
 @app.route('/historial')
