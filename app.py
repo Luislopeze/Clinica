@@ -1,10 +1,15 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash
 from datetime import datetime, date
-from modules import db, Paciente, Alumno, Cita
+from modules import db, Paciente, Alumno, Cita   # asegúrate que modules.py esté en la raíz
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://elsince:KMKUCB87zO04U3RjqNyz8sSdOxoR70xH@dpg-da8b3q0ae00c73cd5sog-a/clinica_db_ov6b"
-app.config['SECRET_KEY'] = "clinica_secret"
+
+# Configuración de la base de datos desde variables de entorno en Render
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "clinica_secret")
+
+# Inicializar SQLAlchemy
 db.init_app(app)
 
 # -----------------------------
@@ -25,8 +30,7 @@ def dashboard():
     pacientes = Paciente.query.all()
     citas = Cita.query.all()
     clinicas = list(set([c.clinica for c in citas]))
-    # Historial: aquí puedes usar otra tabla o filtrar citas completadas
-    historial = []
+    historial = []  # luego podemos implementar tabla Historial
     return render_template("dashboard.html", pacientes=pacientes, citas=citas, historial=historial, clinicas=clinicas)
 
 @app.route("/pacientes")
@@ -80,8 +84,7 @@ def nueva_cita():
 
 @app.route("/historial")
 def historial_view():
-    # Aquí puedes implementar un modelo Historial o usar citas con estado
-    historial = []
+    historial = []  # más adelante podemos mover citas completadas aquí
     return render_template("historial.html", historial=historial)
 
 # -----------------------------
