@@ -1,40 +1,43 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <meta charset="UTF-8">
-    <title>Historial de citas</title>
-</head>
-<body>
-    <h1>Historial de citas atendidas</h1>
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold">Historial de consultas</h3>
 
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Paciente</th>
-                <th>Clínica</th>
-                <th>Fecha</th>
-                <th>Horario</th>
-                <th>Atendido por</th>
-                <th>Notas</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for registro in historial %}
-            <tr>
-                <td>{{ registro.paciente.nombre }}</td>
-                <td>{{ registro.clinica }}</td>
-                <td>{{ registro.fecha.strftime("%d/%m/%Y") }}</td>
-                <td>{{ registro.horario }}</td>
-                <td>{{ registro.atendido_por }}</td>
-                <td>{{ registro.notas }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<!-- Barra de búsqueda -->
+<form method="GET" action="{{ url_for('historial_consultas') }}" class="mb-3">
+    <input type="text" name="buscar" class="form-control" placeholder="Buscar en historial...">
+</form>
 
-    <br>
-    <a href="{{ url_for('dashboard') }}">Volver al dashboard</a>
-</body>
-</html>
+<!-- Tabla de historial -->
+{% if historial %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Paciente</th>
+            <th>Clínica</th>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th>Atendido por</th>
+            <th>Notas</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for h in historial %}
+        <tr>
+            <td>{{ h.paciente }}</td>
+            <td>{{ h.clinica }}</td>
+            <td>{{ h.fecha }}</td>
+            <td>{{ h.horario }}</td>
+            <td>{{ h.atendido_por }}</td>
+            <td>{{ h.notas }}</td>
+            <td>
+                <a href="{{ url_for('eliminar_historial', id=h.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay consultas completadas.</p>
+{% endif %}
+{% endblock %}
