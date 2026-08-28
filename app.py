@@ -5,17 +5,13 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "clinica_secret"
 
-# 🔧 Paso 3: Configuración de conexión a PostgreSQL
-# Sustituye esta URL con la que Render te dio en tu base de datos
+# 🔧 Conexión a tu base de datos PostgreSQL en Render
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://elsince:KMKUCB87zO04U3RjqNyz8sSdOxoR70xH@dpg-da8b3q0ae00c73cd5sog-a/clinica_db_ov6b"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
-@app.before_first_request
-def create_tables():
-    db.create_all()
 
-# 🔧 Paso 4: Definición de modelos (tablas)
+# 🔧 Modelos (tablas)
 class Paciente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     folio = db.Column(db.String(50), unique=True, nullable=False)
@@ -41,6 +37,11 @@ class Historial(db.Model):
     horario = db.Column(db.String(20), nullable=False)
     atendido_por = db.Column(db.String(100))
     notas = db.Column(db.Text)
+
+# 🔧 Paso 5: Crear tablas automáticamente al primer request
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 # Traducción días
 dias_es = {
