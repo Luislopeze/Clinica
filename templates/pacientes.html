@@ -1,44 +1,44 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <meta charset="UTF-8">
-    <title>Pacientes</title>
-</head>
-<body>
-    <h1>Lista de pacientes</h1>
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold">Pacientes</h3>
 
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Folio</th>
-                <th>Nombre</th>
-                <th>Teléfono</th>
-                <th>Nacimiento</th>
-                <th>Notas</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for paciente in pacientes %}
-            <tr>
-                <td>{{ paciente.folio }}</td>
-                <td>{{ paciente.nombre }}</td>
-                <td>{{ paciente.telefono }}</td>
-                <td>{{ paciente.nacimiento.strftime("%d/%m/%Y") if paciente.nacimiento else "" }}</td>
-                <td>{{ paciente.notas }}</td>
-                <td>
-                    <a href="{{ url_for('eliminar_paciente', id=paciente.id) }}">Eliminar</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<!-- Botón superior -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a href="{{ url_for('nuevo_paciente') }}" class="btn btn-primary">+ Nuevo paciente</a>
+</div>
 
-    <br>
-    <a href="{{ url_for('nuevo_paciente') }}">Registrar nuevo paciente</a>
-    <br>
-    <a href="{{ url_for('dashboard') }}">Volver al dashboard</a>
-</body>
-</html>
+<!-- Barra de búsqueda -->
+<form method="GET" action="{{ url_for('pacientes') }}" class="mb-3">
+    <input type="text" name="buscar" class="form-control" placeholder="Buscar paciente...">
+</form>
+
+<!-- Tabla de pacientes -->
+{% if pacientes %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Fecha de nacimiento</th>
+            <th>Notas</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for paciente in pacientes %}
+        <tr>
+            <td>{{ paciente.nombre }}</td>
+            <td>{{ paciente.telefono }}</td>
+            <td>{{ paciente.nacimiento.strftime("%d/%m/%Y") if paciente.nacimiento else "" }}</td>
+            <td>{{ paciente.notas }}</td>
+            <td>
+                <a href="{{ url_for('eliminar_paciente', id=paciente.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay pacientes registrados.</p>
+{% endif %}
+{% endblock %}
