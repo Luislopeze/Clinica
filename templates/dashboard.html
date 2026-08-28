@@ -1,100 +1,114 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Panel principal</h1>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="mb-4">Panel principal</h1>
 
-    <!-- Sección de pacientes -->
-    <h2>Pacientes registrados</h2>
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Folio</th>
-                <th>Nombre</th>
-                <th>Teléfono</th>
-                <th>Nacimiento</th>
-                <th>Notas</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for paciente in pacientes %}
-            <tr>
-                <td>{{ paciente.folio }}</td>
-                <td>{{ paciente.nombre }}</td>
-                <td>{{ paciente.telefono }}</td>
-                <td>{{ paciente.nacimiento.strftime("%d/%m/%Y") if paciente.nacimiento else "" }}</td>
-                <td>{{ paciente.notas }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <br>
-    <a href="{{ url_for('nuevo_paciente') }}">Registrar nuevo paciente</a>
+        <!-- Pacientes -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Pacientes registrados</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Folio</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Nacimiento</th>
+                            <th>Notas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paciente in pacientes %}
+                        <tr>
+                            <td>{{ paciente.folio }}</td>
+                            <td>{{ paciente.nombre }}</td>
+                            <td>{{ paciente.telefono }}</td>
+                            <td>{{ paciente.nacimiento.strftime("%d/%m/%Y") if paciente.nacimiento else "" }}</td>
+                            <td>{{ paciente.notas }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{{ url_for('nuevo_paciente') }}" class="btn btn-primary">Registrar nuevo paciente</a>
+            </div>
+        </div>
 
-    <!-- Sección de citas -->
-    <h2>Citas pendientes</h2>
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Paciente</th>
-                <th>Clínica</th>
-                <th>Fecha</th>
-                <th>Horario</th>
-                <th>Atendido por</th>
-                <th>Notas</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for cita in citas %}
-            <tr>
-                <td>{{ cita.paciente.nombre }}</td>
-                <td>{{ cita.clinica }}</td>
-                <td>{{ cita.fecha.strftime("%d/%m/%Y") }}</td>
-                <td>{{ cita.horario }}</td>
-                <td>{{ cita.atendido_por }}</td>
-                <td>{{ cita.notas }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <br>
-    <a href="{{ url_for('nueva_cita') }}">Registrar nueva cita</a>
+        <!-- Citas -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Citas pendientes</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Paciente</th>
+                            <th>Clínica</th>
+                            <th>Fecha</th>
+                            <th>Horario</th>
+                            <th>Atendido por</th>
+                            <th>Notas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas %}
+                        <tr>
+                            <td>{{ cita.paciente.nombre }}</td>
+                            <td>{{ cita.clinica }}</td>
+                            <td>{{ cita.fecha.strftime("%d/%m/%Y") }}</td>
+                            <td>{{ cita.horario }}</td>
+                            <td>{{ cita.atendido_por }}</td>
+                            <td>{{ cita.notas }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{{ url_for('nueva_cita') }}" class="btn btn-primary">Registrar nueva cita</a>
+            </div>
+        </div>
 
-    <!-- Sección de historial -->
-    <h2>Historial de citas atendidas</h2>
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Paciente</th>
-                <th>Clínica</th>
-                <th>Fecha</th>
-                <th>Horario</th>
-                <th>Atendido por</th>
-                <th>Notas</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for registro in historial %}
-            <tr>
-                <td>{{ registro.paciente.nombre }}</td>
-                <td>{{ registro.clinica }}</td>
-                <td>{{ registro.fecha.strftime("%d/%m/%Y") }}</td>
-                <td>{{ registro.horario }}</td>
-                <td>{{ registro.atendido_por }}</td>
-                <td>{{ registro.notas }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <!-- Historial -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Historial de citas atendidas</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Paciente</th>
+                            <th>Clínica</th>
+                            <th>Fecha</th>
+                            <th>Horario</th>
+                            <th>Atendido por</th>
+                            <th>Notas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registro in historial %}
+                        <tr>
+                            <td>{{ registro.paciente.nombre }}</td>
+                            <td>{{ registro.clinica }}</td>
+                            <td>{{ registro.fecha.strftime("%d/%m/%Y") }}</td>
+                            <td>{{ registro.horario }}</td>
+                            <td>{{ registro.atendido_por }}</td>
+                            <td>{{ registro.notas }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <br>
-    <a href="{{ url_for('pacientes_view') }}">Ver todos los pacientes</a> |
-    <a href="{{ url_for('agenda') }}">Ver agenda completa</a> |
-    <a href="{{ url_for('historial_view') }}">Ver historial completo</a>
+        <!-- Navegación -->
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('pacientes_view') }}" class="btn btn-secondary">Ver pacientes</a>
+            <a href="{{ url_for('agenda') }}" class="btn btn-secondary">Ver agenda</a>
+            <a href="{{ url_for('historial_view') }}" class="btn btn-secondary">Ver historial</a>
+        </div>
+    </div>
 </body>
 </html>
