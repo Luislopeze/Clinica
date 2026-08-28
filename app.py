@@ -38,9 +38,8 @@ class Historial(db.Model):
     atendido_por = db.Column(db.String(100))
     notas = db.Column(db.Text)
 
-# 🔧 Paso 5: Crear tablas automáticamente al primer request
-@app.before_first_request
-def create_tables():
+# 🔧 Crear tablas al iniciar la app (Flask 3.0+)
+with app.app_context():
     db.create_all()
 
 # Traducción días
