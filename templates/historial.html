@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<h3 class="fw-bold">Historia de consultas</h3>
+<h3 class="fw-bold">Historial de consultas</h3>
 
 {% if historial %}
-<table class="table table-striped shadow-sm">
+<div class="table-responsive">
+<table class="table table-striped table-sm shadow-sm">
     <thead class="table-light">
         <tr>
             <th>Paciente</th>
@@ -12,6 +13,7 @@
             <th>Horario</th>
             <th>Atendido por</th>
             <th>Notas</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -23,10 +25,18 @@
             <td>{{ h.horario }}</td>
             <td>{{ h.atendido_por }}</td>
             <td>{{ h.notas }}</td>
+            <td>
+                <a href="#" 
+                   class="btn btn-danger btn-sm d-block d-md-inline mb-1"
+                   onclick="return confirm('¿Seguro que deseas eliminar este registro del historial?')">
+                   Eliminar
+                </a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <p class="text-muted">No hay consultas completadas.</p>
 {% endif %}
