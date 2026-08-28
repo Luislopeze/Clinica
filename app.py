@@ -55,8 +55,8 @@ def dashboard():
 
 # Pacientes
 @app.route("/pacientes")
-def pacientes_view():
-    pacientes = Paciente.query.all()
+def pacientes():
+    pacientes = Paciente.query.all()  # o tu método para obtenerlos
     return render_template("pacientes.html", pacientes=pacientes)
 
 @app.route("/nuevo_paciente", methods=["GET", "POST"])
