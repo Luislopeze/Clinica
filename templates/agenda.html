@@ -24,12 +24,20 @@
             <td>{{ c.atendido_por }}</td>
             <td>
                 <a href="/actualizar_cita/{{ loop.index0 }}/reprogramar" 
-                   class="btn btn-warning btn-sm">Reprogramar</a>
+                   class="btn btn-warning btn-sm"
+                   onclick="return confirm('¿Seguro que deseas reprogramar esta cita?')">
+                   Reprogramar
+                </a>
                 <a href="/actualizar_cita/{{ loop.index0 }}/completado" 
-                   class="btn btn-success btn-sm">Completado</a>
+                   class="btn btn-success btn-sm"
+                   onclick="return confirm('¿Seguro que deseas marcar esta cita como completada?')">
+                   Completado
+                </a>
                 <a href="/actualizar_cita/{{ loop.index0 }}/eliminar" 
                    class="btn btn-danger btn-sm"
-                   onclick="return confirm('¿Seguro que deseas eliminar esta cita?')">Eliminar</a>
+                   onclick="return confirm('¿Seguro que deseas eliminar esta cita?')">
+                   Eliminar
+                </a>
             </td>
         </tr>
         {% endfor %}
