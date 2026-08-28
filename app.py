@@ -23,6 +23,7 @@ class Paciente(db.Model):
 class Cita(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     paciente_id = db.Column(db.Integer, db.ForeignKey("paciente.id"), nullable=False)
+    paciente = db.relationship("Paciente", backref="citas")  # 👈 relación añadida
     clinica = db.Column(db.String(50), nullable=False)
     fecha = db.Column(db.Date, nullable=False)
     horario = db.Column(db.String(20), nullable=False)
@@ -32,6 +33,7 @@ class Cita(db.Model):
 class Historial(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     paciente_id = db.Column(db.Integer, db.ForeignKey("paciente.id"), nullable=False)
+    paciente = db.relationship("Paciente", backref="historial")  # 👈 relación añadida
     clinica = db.Column(db.String(50), nullable=False)
     fecha = db.Column(db.Date, nullable=False)
     horario = db.Column(db.String(20), nullable=False)
@@ -41,17 +43,6 @@ class Historial(db.Model):
 # 🔧 Crear tablas al iniciar la app (Flask 3.0+)
 with app.app_context():
     db.create_all()
-
-# Traducción días
-dias_es = {
-    "Monday": "Lunes",
-    "Tuesday": "Martes",
-    "Wednesday": "Miércoles",
-    "Thursday": "Jueves",
-    "Friday": "Viernes",
-    "Saturday": "Sábado",
-    "Sunday": "Domingo"
-}
 
 # Dashboard inicial
 @app.route("/")
