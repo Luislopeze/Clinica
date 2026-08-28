@@ -5,7 +5,8 @@
 <a href="/nuevo_paciente" class="btn btn-primary mb-3">+ Nuevo paciente</a>
 
 {% if pacientes %}
-<table class="table table-striped shadow-sm">
+<div class="table-responsive">
+<table class="table table-striped table-sm shadow-sm">
     <thead class="table-light">
         <tr>
             <th>Folio</th>
@@ -26,7 +27,7 @@
             <td>{{ p.notas }}</td>
             <td>
                 <a href="/eliminar_paciente/{{ loop.index0 }}" 
-                   class="btn btn-danger btn-sm"
+                   class="btn btn-danger btn-sm d-block d-md-inline mb-1"
                    onclick="return confirm('¿Seguro que deseas eliminar este paciente?')">
                    Eliminar
                 </a>
@@ -35,6 +36,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% else %}
 <p class="text-muted">No hay pacientes registrados.</p>
 {% endif %}
