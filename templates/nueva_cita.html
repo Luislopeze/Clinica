@@ -4,45 +4,37 @@
 
 <div class="card shadow-sm p-4">
     <form>
+        <!-- Paciente -->
         <div class="mb-3">
             <label class="fw-bold">Paciente *</label>
-            <select class="form-select">
-                <option selected>Selecciona un paciente</option>
+            <select class="form-select" required>
+                <option selected disabled>Selecciona un paciente</option>
                 {% for p in pacientes %}
                 <option>{{ p }}</option>
                 {% endfor %}
             </select>
         </div>
 
+        <!-- Clínica -->
         <div class="mb-3">
-            <label class="fw-bold">Alumno *</label>
-            <select class="form-select">
-                {% for a in alumnos %}
-                <option>{{ a }}</option>
+            <label class="fw-bold">Clínica *</label>
+            <select id="clinica" class="form-select" required onchange="actualizarHorarios()">
+                <option selected disabled>Selecciona una clínica</option>
+                {% for c in clinicas %}
+                <option>{{ c }}</option>
                 {% endfor %}
             </select>
         </div>
 
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label class="fw-bold">Fecha *</label>
-                <input type="date" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label class="fw-bold">Inicio *</label>
-                <input type="time" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label class="fw-bold">Fin *</label>
-                <input type="time" class="form-control">
-            </div>
-        </div>
-
+        <!-- Horarios -->
         <div class="mb-3">
-            <label class="fw-bold">Procedimiento</label>
-            <input type="text" class="form-control" placeholder="Ej. Endodoncia, restauración, valoración...">
+            <label class="fw-bold">Horario disponible *</label>
+            <select id="horario" class="form-select" required>
+                <option selected disabled>Selecciona un horario</option>
+            </select>
         </div>
 
+        <!-- Notas -->
         <div class="mb-3">
             <label class="fw-bold">Notas</label>
             <textarea class="form-control" rows="3"></textarea>
@@ -51,4 +43,18 @@
         <button class="btn btn-primary w-100">Agendar cita</button>
     </form>
 </div>
+
+<script>
+    const horarios = {{ horarios | tojson }};
+    function actualizarHorarios() {
+        const clinicaSeleccionada = document.getElementById("clinica").value;
+        const selectHorario = document.getElementById("horario");
+        selectHorario.innerHTML = '<option selected disabled>Selecciona un horario</option>';
+        horarios[clinicaSeleccionada].forEach(h => {
+            const opt = document.createElement("option");
+            opt.textContent = h;
+            selectHorario.appendChild(opt);
+        });
+    }
+</script>
 {% endblock %}
