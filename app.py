@@ -5,7 +5,13 @@ app = Flask(__name__)
 app.secret_key = "clinica_secret"
 
 # Paciente de prueba
-pacientes = [{"folio": "EXP-001", "nombre": "Juan Pérez", "telefono": "3111234567", "nacimiento": "2000-05-12", "notas": "Paciente de prueba"}]
+pacientes = [{
+    "folio": "EXP-001",
+    "nombre": "Juan Pérez",
+    "telefono": "3111234567",
+    "nacimiento": "2000-05-12",
+    "notas": "Paciente de prueba"
+}]
 
 citas = []
 historial = []
@@ -29,19 +35,11 @@ horarios = {
     }
 }
 
-@app.route("/")
-def inicio():
-    hoy = date.today().strftime("%Y-%m-%d")
-    odontologos = [
-        {"nombre": "Luis", "citas": sum(1 for c in citas if c["atendido_por"] == "Luis")},
-        {"nombre": "Angie", "citas": sum(1 for c in citas if c["atendido_por"] == "Angie")}
-    ]
-    citas_hoy = [c for c in citas if c["fecha"] == hoy]
-    return render_template("inicio.html", hoy=hoy, odontologos=odontologos, citas_hoy=citas_hoy)
-
 @app.route("/agenda")
 def agenda():
-    return render_template("agenda.html", citas=citas)
+    # Ordenar citas por fecha (más próxima primero)
+    citas_ordenadas = sorted(citas, key=lambda x: x["fecha"])
+    return render_template("agenda.html", citas=citas_ordenadas)
 
 @app.route("/historial")
 def historial_consultas():
@@ -60,7 +58,13 @@ def nuevo_paciente():
         telefono = request.form["telefono"]
         nacimiento = request.form["nacimiento"]
         notas = request.form["notas"]
-        pacientes.append({"folio": folio, "nombre": nombre, "telefono": telefono, "nacimiento": nacimiento, "notas": notas})
+        pacientes.append({
+            "folio": folio,
+            "nombre": nombre,
+            "telefono": telefono,
+            "nacimiento": nacimiento,
+            "notas": notas
+        })
         return redirect(url_for("lista_pacientes"))
     return render_template("nuevo_paciente.html")
 
@@ -80,35 +84,17 @@ def nueva_cita():
         atendido_por = request.form["atendido_por"]
         notas = request.form.get("notas", "")
 
-        # Validar cruce de citas
-        for c in citas:
-            if c["fecha"] == fecha and c["clinica"] == clinica and c["horario"] == horario:
-                flash("⚠️ Ya existe una cita en ese horario y clínica.")
-                return redirect(url_for("nueva_cita"))
-
-        citas.append({
-            "paciente": paciente,
-            "clinica": clinica,
-            "fecha": fecha,
-            "horario": horario,
-            "atendido_por": atendido_por,
-            "notas": notas
-        })
-
-        # 🔹 Ahora redirige a Agenda en lugar de Inicio
-        return redirect(url_for("agenda"))
-
-    return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=[p["nombre"] for p in pacientes])
-
-@app.route("/agenda")
-def agenda():
-    # 🔹 Ordenar citas por fecha (más próxima primero)
-    citas_ordenadas = sorted(citas, key=lambda x: x["fecha"])
-    return render_template("agenda.html", citas=citas_ordenadas)
-
         # Validar día de la semana
         dia_semana = datetime.strptime(fecha, "%Y-%m-%d").strftime("%A")
-        dias_es = {"Monday":"Lunes","Tuesday":"Martes","Wednesday":"Miércoles","Thursday":"Jueves","Friday":"Viernes","Saturday":"Sábado","Sunday":"Domingo"}
+        dias_es = {
+            "Monday": "Lunes",
+            "Tuesday": "Martes",
+            "Wednesday": "Miércoles",
+            "Thursday": "Jueves",
+            "Friday": "Viernes",
+            "Saturday": "Sábado",
+            "Sunday": "Domingo"
+        }
         dia_es = dias_es[dia_semana]
 
         if dia_es not in horarios[clinica]:
@@ -127,10 +113,12 @@ def agenda():
             "fecha": fecha,
             "horario": horario,
             "atendido_por": atendido_por,
-            "notas": notas,
-            "estado": "En progreso"
+            "notas": notas
         })
-        return redirect(url_for("inicio"))
+
+        # 🔹 Redirige a Agenda en lugar de Inicio
+        return redirect(url_for("agenda"))
+
     return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=[p["nombre"] for p in pacientes])
 
 @app.route("/actualizar_cita/<int:index>/<accion>")
@@ -147,5 +135,3 @@ def actualizar_cita(index, accion):
             citas.pop(index)
             return redirect(url_for("nueva_cita"))
     return redirect(url_for("agenda"))
-
-
