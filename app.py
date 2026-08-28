@@ -122,3 +122,4 @@ def actualizar_cita(index, accion):
             return redirect(url_for("nueva_cita"))
     return redirect(url_for("agenda"))
 
+
