@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold">Pacientes</h3>
+
+<div class="d-flex mb-3">
+    <input type="text" class="form-control me-2" placeholder="Buscar por nombre o teléfono">
+    <button class="btn btn-secondary">Buscar</button>
+    <a href="#" class="btn btn-primary ms-auto">+ Nuevo paciente</a>
+</div>
+
+<table class="table table-striped shadow-sm">
+    <thead class="table-light">
+        <tr>
+            <th>Paciente</th>
+            <th>Teléfono</th>
+            <th>Fecha de nacimiento</th>
+            <th>Notas</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in pacientes %}
+        <tr>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.telefono }}</td>
+            <td>{{ p.nacimiento }}</td>
+            <td>{{ p.notas }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
