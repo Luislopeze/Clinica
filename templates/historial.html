@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold">Historia de consultas</h3>
+
+{% if historial %}
+<table class="table table-striped shadow-sm">
+    <thead class="table-light">
+        <tr>
+            <th>Paciente</th>
+            <th>Clínica</th>
+            <th>Horario</th>
+            <th>Atendido por</th>
+            <th>Notas</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for h in historial %}
+        <tr>
+            <td>{{ h.paciente }}</td>
+            <td>{{ h.clinica }}</td>
+            <td>{{ h.horario }}</td>
+            <td>{{ h.atendido_por }}</td>
+            <td>{{ h.notas }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No hay consultas completadas.</p>
+{% endif %}
+{% endblock %}
