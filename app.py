@@ -1,31 +1,32 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from datetime import date
+from datetime import date, datetime
 
 app = Flask(__name__)
 app.secret_key = "clinica_secret"
 
-# Datos simulados
-pacientes = []
+# Paciente de prueba
+pacientes = [{"folio": "EXP-001", "nombre": "Juan Pérez", "telefono": "3111234567", "nacimiento": "2000-05-12", "notas": "Paciente de prueba"}]
+
 citas = []
 historial = []
 
 clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
 horarios = {
-    "Clínica Integral": [
-        "Lunes 4pm - 6pm",
-        "Martes 4pm - 6pm",
-        "Miércoles 10am - 12pm",
-        "Jueves 4pm - 6pm",
-        "Viernes 10am - 12pm"
-    ],
-    "Prótesis Total": [
-        "Miércoles 4pm - 6pm",
-        "Viernes 12pm - 2pm"
-    ],
-    "Prótesis Removible": [
-        "Lunes 12pm - 2pm",
-        "Miércoles 12pm - 2pm"
-    ]
+    "Clínica Integral": {
+        "Lunes": "4pm - 6pm",
+        "Martes": "4pm - 6pm",
+        "Miércoles": "10am - 12pm",
+        "Jueves": "4pm - 6pm",
+        "Viernes": "10am - 12pm"
+    },
+    "Prótesis Total": {
+        "Miércoles": "4pm - 6pm",
+        "Viernes": "12pm - 2pm"
+    },
+    "Prótesis Removible": {
+        "Lunes": "12pm - 2pm",
+        "Miércoles": "12pm - 2pm"
+    }
 }
 
 @app.route("/")
@@ -35,7 +36,7 @@ def inicio():
         {"nombre": "Luis", "citas": sum(1 for c in citas if c["atendido_por"] == "Luis")},
         {"nombre": "Angie", "citas": sum(1 for c in citas if c["atendido_por"] == "Angie")}
     ]
-    citas_hoy = [c for c in citas if hoy in c.get("horario", "")]
+    citas_hoy = [c for c in citas if c["fecha"] == hoy]
     return render_template("inicio.html", hoy=hoy, odontologos=odontologos, citas_hoy=citas_hoy)
 
 @app.route("/agenda")
@@ -59,13 +60,7 @@ def nuevo_paciente():
         telefono = request.form["telefono"]
         nacimiento = request.form["nacimiento"]
         notas = request.form["notas"]
-        pacientes.append({
-            "folio": folio,
-            "nombre": nombre,
-            "telefono": telefono,
-            "nacimiento": nacimiento,
-            "notas": notas
-        })
+        pacientes.append({"folio": folio, "nombre": nombre, "telefono": telefono, "nacimiento": nacimiento, "notas": notas})
         return redirect(url_for("lista_pacientes"))
     return render_template("nuevo_paciente.html")
 
@@ -80,19 +75,30 @@ def nueva_cita():
     if request.method == "POST":
         paciente = request.form["paciente"]
         clinica = request.form["clinica"]
+        fecha = request.form["fecha"]
         horario = request.form["horario"]
         atendido_por = request.form["atendido_por"]
         notas = request.form.get("notas", "")
 
-        # Validar que no se crucen citas
+        # Validar día de la semana
+        dia_semana = datetime.strptime(fecha, "%Y-%m-%d").strftime("%A")
+        dias_es = {"Monday":"Lunes","Tuesday":"Martes","Wednesday":"Miércoles","Thursday":"Jueves","Friday":"Viernes","Saturday":"Sábado","Sunday":"Domingo"}
+        dia_es = dias_es[dia_semana]
+
+        if dia_es not in horarios[clinica]:
+            flash(f"⚠️ La clínica {clinica} no atiende el día {dia_es}.")
+            return redirect(url_for("nueva_cita"))
+
+        # Validar cruce de citas
         for c in citas:
-            if c["horario"] == horario and c["clinica"] == clinica:
+            if c["fecha"] == fecha and c["clinica"] == clinica and c["horario"] == horario:
                 flash("⚠️ Ya existe una cita en ese horario y clínica.")
                 return redirect(url_for("nueva_cita"))
 
         citas.append({
             "paciente": paciente,
             "clinica": clinica,
+            "fecha": fecha,
             "horario": horario,
             "atendido_por": atendido_por,
             "notas": notas,
