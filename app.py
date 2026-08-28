@@ -114,11 +114,11 @@ def actualizar_cita(index, accion):
         if accion == "eliminar":
             citas.pop(index)
         elif accion == "completado":
-            cita["estado"] = "Completado"
             historial.append(cita)
             citas.pop(index)
         elif accion == "reprogramar":
-            cita["estado"] = "Reprogramada"
-        elif accion == "progreso":
-            cita["estado"] = "En progreso"
+            # Borra la cita y redirige a nueva cita
+            citas.pop(index)
+            return redirect(url_for("nueva_cita"))
     return redirect(url_for("agenda"))
+
