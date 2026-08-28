@@ -3,11 +3,11 @@
 <h3 class="fw-bold">Nueva cita</h3>
 
 <div class="card shadow-sm p-4">
-    <form>
+    <form method="post">
         <!-- Paciente -->
         <div class="mb-3">
             <label class="fw-bold">Paciente *</label>
-            <select class="form-select" required>
+            <select name="paciente" class="form-select" required>
                 <option selected disabled>Selecciona un paciente</option>
                 {% for p in pacientes %}
                 <option>{{ p }}</option>
@@ -18,7 +18,7 @@
         <!-- Clínica -->
         <div class="mb-3">
             <label class="fw-bold">Clínica *</label>
-            <select id="clinica" class="form-select" required onchange="actualizarHorarios()">
+            <select id="clinica" name="clinica" class="form-select" required onchange="actualizarHorarios()">
                 <option selected disabled>Selecciona una clínica</option>
                 {% for c in clinicas %}
                 <option>{{ c }}</option>
@@ -29,7 +29,7 @@
         <!-- Horarios -->
         <div class="mb-3">
             <label class="fw-bold">Horario disponible *</label>
-            <select id="horario" class="form-select" required>
+            <select id="horario" name="horario" class="form-select" required>
                 <option selected disabled>Selecciona un horario</option>
             </select>
         </div>
@@ -37,7 +37,7 @@
         <!-- Notas -->
         <div class="mb-3">
             <label class="fw-bold">Notas</label>
-            <textarea class="form-control" rows="3"></textarea>
+            <textarea name="notas" class="form-control" rows="3"></textarea>
         </div>
 
         <button class="btn btn-primary w-100">Agendar cita</button>
