@@ -1,69 +1,37 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from datetime import datetime
+from datetime import datetime, date
+from modules import db, Paciente, Alumno, Cita
 
 app = Flask(__name__)
-app.secret_key = "clinica_secret"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://elsince:KMKUCB87zO04U3RjqNyz8sSdOxoR70xH@dpg-da8b3q0ae00c73cd5sog-a/clinica_db_ov6b"
+app.config['SECRET_KEY'] = "clinica_secret"
+db.init_app(app)
 
-# Datos en memoria
-pacientes = []
-citas = []
-historial = []
-
-# Clínicas disponibles
-clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
-
-# Horarios por día y clínica
-horarios = {
-    "Lunes": [
-        {"clinica": "Prótesis Removible", "horario": "12:00-14:00"},
-        {"clinica": "Clínica Integral", "horario": "16:00-18:00"}
-    ],
-    "Martes": [
-        {"clinica": "Clínica Integral", "horario": "16:00-18:00"}
-    ],
-    "Miércoles": [
-        {"clinica": "Clínica Integral", "horario": "10:00-12:00"},
-        {"clinica": "Prótesis Removible", "horario": "12:00-14:00"},
-        {"clinica": "Prótesis Total", "horario": "16:00-18:00"}
-    ],
-    "Jueves": [
-        {"clinica": "Clínica Integral", "horario": "16:00-18:00"}
-    ],
-    "Viernes": [
-        {"clinica": "Clínica Integral", "horario": "10:00-12:00"},
-        {"clinica": "Prótesis Total", "horario": "12:00-14:00"}
-    ]
-}
-
-# Traducción días
-dias_es = {
-    "Monday": "Lunes",
-    "Tuesday": "Martes",
-    "Wednesday": "Miércoles",
-    "Thursday": "Jueves",
-    "Friday": "Viernes",
-    "Saturday": "Sábado",
-    "Sunday": "Domingo"
-}
-
-# Dashboard inicial
+# -----------------------------
+# RUTAS
+# -----------------------------
 @app.route("/")
+def inicio():
+    hoy = date.today().strftime("%Y-%m-%d")
+    odontologos = [
+        {"nombre": "Luis", "citas": Cita.query.filter_by(atendido_por="Luis", fecha=date.today()).count()},
+        {"nombre": "Angie", "citas": Cita.query.filter_by(atendido_por="Angie", fecha=date.today()).count()}
+    ]
+    citas_hoy = Cita.query.filter_by(fecha=date.today()).all()
+    return render_template("inicio.html", hoy=hoy, odontologos=odontologos, citas_hoy=citas_hoy)
+
+@app.route("/dashboard")
 def dashboard():
+    pacientes = Paciente.query.all()
+    citas = Cita.query.all()
+    clinicas = list(set([c.clinica for c in citas]))
+    # Historial: aquí puedes usar otra tabla o filtrar citas completadas
+    historial = []
     return render_template("dashboard.html", pacientes=pacientes, citas=citas, historial=historial, clinicas=clinicas)
 
-# Agenda
-@app.route("/agenda")
-def agenda():
-    return render_template("agenda.html", citas=citas)
-
-# Historial
-@app.route("/historial")
-def historial_view():
-    return render_template("historial.html", historial=historial)
-
-# Pacientes
 @app.route("/pacientes")
 def pacientes_view():
+    pacientes = Paciente.query.all()
     return render_template("pacientes.html", pacientes=pacientes)
 
 @app.route("/nuevo_paciente", methods=["GET", "POST"])
@@ -72,82 +40,54 @@ def nuevo_paciente():
         folio = "EXP-" + request.form["folio"]
         nombre = request.form["nombre"]
         telefono = request.form["telefono"]
-        nacimiento = request.form["nacimiento"]
+        nacimiento = datetime.strptime(request.form["nacimiento"], "%Y-%m-%d").date()
         notas = request.form.get("notas", "")
-        pacientes.append({
-            "folio": folio,
-            "nombre": nombre,
-            "telefono": telefono,
-            "nacimiento": nacimiento,
-            "notas": notas
-        })
+        nuevo = Paciente(folio=folio, nombre=nombre, telefono=telefono,
+                         fecha_nacimiento=nacimiento, notas=notas)
+        db.session.add(nuevo)
+        db.session.commit()
+        flash("Paciente registrado correctamente")
         return redirect(url_for("pacientes_view"))
     return render_template("nuevo_paciente.html")
 
-@app.route("/eliminar_paciente/<int:index>")
-def eliminar_paciente(index):
-    if 0 <= index < len(pacientes):
-        pacientes.pop(index)
-    return redirect(url_for("pacientes_view"))
+@app.route("/agenda")
+def agenda_view():
+    citas = Cita.query.all()
+    return render_template("agenda.html", citas=citas)
 
-# Nueva cita
 @app.route("/nueva_cita", methods=["GET", "POST"])
 def nueva_cita():
+    pacientes = Paciente.query.all()
     if request.method == "POST":
-        paciente = request.form["paciente"]
+        paciente_id = request.form["paciente"]
         clinica = request.form["clinica"]
-        fecha = request.form["fecha"]
         horario = request.form["horario"]
+        fecha = datetime.strptime(request.form["fecha"], "%Y-%m-%d").date()
         atendido_por = request.form["atendido_por"]
         notas = request.form.get("notas", "")
+        nueva = Cita(dia=fecha.strftime("%A"),
+                     hora_inicio=horario.split("-")[0],
+                     hora_fin=horario.split("-")[1],
+                     clinica=clinica,
+                     paciente_id=paciente_id,
+                     alumno_id=None,
+                     notas=notas)
+        db.session.add(nueva)
+        db.session.commit()
+        flash("Cita registrada correctamente")
+        return redirect(url_for("agenda_view"))
+    return render_template("nueva_cita.html", pacientes=pacientes)
 
-        # Validar día de la semana
-        dia_semana = datetime.strptime(fecha, "%Y-%m-%d").strftime("%A")
-        dia_es = dias_es[dia_semana]
+@app.route("/historial")
+def historial_view():
+    # Aquí puedes implementar un modelo Historial o usar citas con estado
+    historial = []
+    return render_template("historial.html", historial=historial)
 
-        # Validar que la clínica atienda ese día
-        valido = False
-        for h in horarios.get(dia_es, []):
-            if h["clinica"] == clinica and h["horario"] == horario:
-                valido = True
-                break
-
-        if not valido:
-            flash(f"⚠️ La clínica {clinica} no atiende el día {dia_es} en ese horario.")
-            return redirect(url_for("nueva_cita"))
-
-        # Validar cruce de citas
-        for c in citas:
-            if c["fecha"] == fecha and c["clinica"] == clinica and c["horario"] == horario:
-                flash("⚠️ Ya existe una cita en ese horario y clínica.")
-                return redirect(url_for("nueva_cita"))
-
-        citas.append({
-            "paciente": paciente,
-            "clinica": clinica,
-            "fecha": fecha,
-            "horario": horario,
-            "atendido_por": atendido_por,
-            "notas": notas
-        })
-        return redirect(url_for("agenda"))
-
-    return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=[p["nombre"] for p in pacientes])
-
-# Actualizar cita
-@app.route("/actualizar_cita/<int:index>/<accion>")
-def actualizar_cita(index, accion):
-    if 0 <= index < len(citas):
-        cita = citas[index]
-        if accion == "completado":
-            historial.append(cita)
-            citas.pop(index)
-        elif accion == "eliminar":
-            citas.pop(index)
-        elif accion == "reprogramar":
-            flash("🔄 Reprograma la cita seleccionando nueva fecha y horario.")
-            return redirect(url_for("nueva_cita"))
-    return redirect(url_for("agenda"))
-
+# -----------------------------
+# EJECUCIÓN
+# -----------------------------
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
