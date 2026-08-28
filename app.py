@@ -1,22 +1,30 @@
-from flask import Flask, render_template, request
-from datetime import date
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route("/")
-def index():
-    return render_template("agenda.html", hoy=date.today().strftime("%d/%m/%Y"))
-
-@app.route("/pacientes")
-def pacientes():
-    pacientes = [
-        {"nombre": "Juan Pérez", "telefono": "3111234567", "nacimiento": "2000-05-12", "notas": "Valoración inicial"},
-        {"nombre": "María López", "telefono": "3119876543", "nacimiento": "1998-09-21", "notas": "Endodoncia"}
-    ]
-    return render_template("pacientes.html", pacientes=pacientes)
-
 @app.route("/nueva_cita")
 def nueva_cita():
-    alumnos = ["Luis", "Angie"]
-    pacientes = ["Juan Pérez", "María López"]
-    return render_template("nueva_cita.html", alumnos=alumnos, pacientes=pacientes)
+    # Clínicas fijas
+    clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
+
+    # Horarios por clínica
+    horarios = {
+        "Clínica Integral": [
+            "Lunes 4pm - 6pm",
+            "Martes 4pm - 6pm",
+            "Miércoles 10am - 12pm",
+            "Jueves 4pm - 6pm",
+            "Viernes 10am - 12pm"
+        ],
+        "Prótesis Total": [
+            "Miércoles 4pm - 6pm",
+            "Viernes 12pm - 2pm"
+        ],
+        "Prótesis Removible": [
+            "Lunes 12pm - 2pm",
+            "Miércoles 12pm - 2pm"
+        ]
+    }
+
+    pacientes = ["Juan Pérez", "María López", "Carlos Ruiz"]
+    return render_template("nueva_cita.html", clinicas=clinicas, horarios=horarios, pacientes=pacientes)
