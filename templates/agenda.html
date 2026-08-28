@@ -8,9 +8,9 @@
         <tr>
             <th>Paciente</th>
             <th>Clínica</th>
+            <th>Fecha</th>
             <th>Horario</th>
             <th>Atendido por</th>
-            <th>Estado</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -19,14 +19,17 @@
         <tr>
             <td>{{ c.paciente }}</td>
             <td>{{ c.clinica }}</td>
+            <td>{{ c.fecha }}</td>
             <td>{{ c.horario }}</td>
             <td>{{ c.atendido_por }}</td>
-            <td>{{ c.estado }}</td>
             <td>
-                <a href="/actualizar_cita/{{ loop.index0 }}/progreso" class="btn btn-info btn-sm">En progreso</a>
-                <a href="/actualizar_cita/{{ loop.index0 }}/reprogramar" class="btn btn-warning btn-sm">Reprogramar</a>
-                <a href="/actualizar_cita/{{ loop.index0 }}/completado" class="btn btn-success btn-sm">Completado</a>
-                <a href="/actualizar_cita/{{ loop.index0 }}/eliminar" class="btn btn-danger btn-sm">Eliminar</a>
+                <a href="/actualizar_cita/{{ loop.index0 }}/reprogramar" 
+                   class="btn btn-warning btn-sm">Reprogramar</a>
+                <a href="/actualizar_cita/{{ loop.index0 }}/completado" 
+                   class="btn btn-success btn-sm">Completado</a>
+                <a href="/actualizar_cita/{{ loop.index0 }}/eliminar" 
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('¿Seguro que deseas eliminar esta cita?')">Eliminar</a>
             </td>
         </tr>
         {% endfor %}
