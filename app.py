@@ -4,7 +4,7 @@ app = Flask(__name__)
 app.secret_key = "clinica_secret"
 
 # Conexión a PostgreSQL (usa la URL que te dio Render)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://usuario:password@host:puerto/dbname"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://elsince:KMKUCB87zO04U3RjqNyz8sSdOxoR70xH@dpg-da8b3q0ae00c73cd5sog-a/clinica_db_ov6b"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
