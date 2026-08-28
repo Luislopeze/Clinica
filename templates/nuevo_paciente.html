@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold">Nuevo paciente</h3>
+
+<div class="card shadow-sm p-4">
+    <form method="post">
+        <div class="mb-3">
+            <label class="fw-bold">Nombre *</label>
+            <input type="text" name="nombre" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="fw-bold">Teléfono</label>
+            <input type="text" name="telefono" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="fw-bold">Fecha de nacimiento</label>
+            <input type="date" name="nacimiento" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="fw-bold">Notas</label>
+            <textarea name="notas" class="form-control" rows="3"></textarea>
+        </div>
+        <button class="btn btn-primary w-100">Guardar paciente</button>
+    </form>
+</div>
+{% endblock %}
