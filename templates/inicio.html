@@ -23,7 +23,7 @@
         {% if citas_hoy %}
             <ul>
                 {% for c in citas_hoy %}
-                <li>{{ c.paciente }} — {{ c.clinica }} — {{ c.horario }}</li>
+                <li>{{ c.paciente }} — {{ c.clinica }} — {{ c.horario }} — Atendido por {{ c.atendido_por }}</li>
                 {% endfor %}
             </ul>
         {% else %}
