@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold">Pacientes</h3>
+
+<a href="/nuevo_paciente" class="btn btn-primary mb-3">+ Nuevo paciente</a>
+
+<!-- Buscador -->
+<input type="text" id="buscadorPacientes" class="form-control mb-3" placeholder="Buscar paciente...">
+
+{% if pacientes %}
+<!-- Tabla (solo escritorio) -->
+<div class="table-responsive d-none d-md-block">
+<table class="table table-striped table-sm shadow-sm" id="tablaPacientes">
+    <thead class="table-light">
+        <tr>
+            <th>Folio</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Fecha de nacimiento</th>
+            <th>Notas</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in pacientes %}
+        <tr>
+            <td>{{ p.folio }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.telefono }}</td>
+            <td>{{ p.nacimiento }}</td>
+            <td>{{ p.notas }}</td>
+            <td>
+                <a href="/eliminar_paciente/{{ loop.index0 }}" 
+                   class="btn btn-danger btn-sm mb-1"
+                   onclick="return confirm('¿Seguro que deseas eliminar este paciente?')">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<!-- Cards (solo móvil) -->
+<div class="d-md-none">
+  {% for p in pacientes %}
+  <div class="card mb-3 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">{{ p.nombre }}</h5>
+      <p class="card-text">
+        Folio: {{ p.folio }} <br>
+        Teléfono: {{ p.telefono }} <br>
+        Nacimiento: {{ p.nacimiento }} <br>
+        Notas: {{ p.notas }}
+      </p>
+      <a href="/eliminar_paciente/{{ loop.index0 }}" 
+         class="btn btn-danger btn-sm mb-1"
+         onclick="return confirm('¿Seguro que deseas eliminar este paciente?')">Eliminar</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">No hay pacientes registrados.</p>
+{% endif %}
+
+<script>
+document.getElementById("buscadorPacientes").addEventListener("keyup", function() {
+  let filtro = this.value.toLowerCase();
+  let filas = document.querySelectorAll("#tablaPacientes tbody tr");
+  filas.forEach(fila => {
+    let texto = fila.textContent.toLowerCase();
+    fila.style.display = texto.includes(filtro) ? "" : "none";
+  });
+});
+</script>
+{% endblock %}

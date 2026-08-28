@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="fw-bold">Nuevo paciente</h3>
+
+<div class="card shadow-sm p-4">
+    <form method="post">
+        <!-- Folio -->
+        <div class="mb-3">
+            <label class="fw-bold">Folio *</label>
+            <input type="text" name="folio" class="form-control" placeholder="Ejemplo: 002" required>
+            <small class="text-muted">El sistema agregará automáticamente el prefijo EXP-.</small>
+        </div>
+
+        <!-- Nombre -->
+        <div class="mb-3">
+            <label class="fw-bold">Nombre completo *</label>
+            <input type="text" name="nombre" class="form-control" placeholder="Ejemplo: Juan Pérez" required>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="mb-3">
+            <label class="fw-bold">Teléfono *</label>
+            <input type="tel" name="telefono" class="form-control" placeholder="Ejemplo: 3111234567" required>
+        </div>
+
+        <!-- Fecha de nacimiento -->
+        <div class="mb-3">
+            <label class="fw-bold">Fecha de nacimiento *</label>
+            <input type="date" name="nacimiento" class="form-control" required>
+        </div>
+
+        <!-- Notas -->
+        <div class="mb-3">
+            <label class="fw-bold">Notas</label>
+            <textarea name="notas" class="form-control" rows="3" placeholder="Información adicional del paciente"></textarea>
+        </div>
+
+        <button class="btn btn-primary w-100">Guardar paciente</button>
+    </form>
+</div>
+{% endblock %}
