@@ -101,6 +101,7 @@ def agenda():
 def nueva_cita():
     pacientes = Paciente.query.all()
     clinicas = ["Clínica Integral", "Prótesis Total", "Prótesis Removible"]
+    doctores = ["Luis", "Angie"]  # 👈 opciones fijas
 
     if request.method == "POST":
         paciente_id = request.form["paciente"]
@@ -110,12 +111,19 @@ def nueva_cita():
         atendido_por = request.form["atendido_por"]
         notas = request.form.get("notas", "")
 
-        nueva = Cita(paciente_id=paciente_id, clinica=clinica, fecha=fecha, horario=horario, atendido_por=atendido_por, notas=notas)
+        nueva = Cita(
+            paciente_id=paciente_id,
+            clinica=clinica,
+            fecha=fecha,
+            horario=horario,
+            atendido_por=atendido_por,
+            notas=notas
+        )
         db.session.add(nueva)
         db.session.commit()
         return redirect(url_for("agenda"))
 
-    return render_template("nueva_cita.html", pacientes=pacientes, clinicas=clinicas)
+    return render_template("nueva_cita.html", pacientes=pacientes, clinicas=clinicas, doctores=doctores)
 
 # Historial
 @app.route("/historial")
