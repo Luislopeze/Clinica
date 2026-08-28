@@ -2,19 +2,17 @@
 {% block content %}
 <h3 class="fw-bold">Pacientes</h3>
 
-<div class="d-flex mb-3">
-    <input type="text" class="form-control me-2" placeholder="Buscar por nombre o teléfono">
-    <button class="btn btn-secondary">Buscar</button>
-    <a href="#" class="btn btn-primary ms-auto">+ Nuevo paciente</a>
-</div>
+<a href="/nuevo_paciente" class="btn btn-primary mb-3">+ Nuevo paciente</a>
 
+{% if pacientes %}
 <table class="table table-striped shadow-sm">
     <thead class="table-light">
         <tr>
-            <th>Paciente</th>
+            <th>Nombre</th>
             <th>Teléfono</th>
-            <th>Fecha de nacimiento</th>
+            <th>Nacimiento</th>
             <th>Notas</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -24,8 +22,14 @@
             <td>{{ p.telefono }}</td>
             <td>{{ p.nacimiento }}</td>
             <td>{{ p.notas }}</td>
+            <td>
+                <a href="/eliminar_paciente/{{ loop.index0 }}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+<p class="text-muted">No hay pacientes registrados.</p>
+{% endif %}
 {% endblock %}
