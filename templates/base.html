@@ -10,6 +10,7 @@
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">🦷 Clínica Odontológica</a>
             <div class="ms-auto">
+                <a href="/" class="btn btn-outline-secondary me-2">Inicio</a>
                 <a href="/agenda" class="btn btn-outline-secondary me-2">Agenda</a>
                 <a href="/pacientes" class="btn btn-outline-secondary me-2">Pacientes</a>
                 <a href="/nueva_cita" class="btn btn-primary">+ Nueva cita</a>
@@ -17,6 +18,15 @@
         </div>
     </nav>
     <div class="container mt-5">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-warning">
+              {% for msg in messages %}
+                {{ msg }}
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
         {% block content %}{% endblock %}
     </div>
 </body>
