@@ -4,7 +4,7 @@ db = SQLAlchemy()
 
 class Paciente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    folio = db.Column(db.String(50), unique=True, nullable=False)
+    folio = db.Column(db.String(20), unique=True, nullable=False)
     nombre = db.Column(db.String(100), nullable=False)
     telefono = db.Column(db.String(20))
     fecha_nacimiento = db.Column(db.Date)
@@ -13,7 +13,7 @@ class Paciente(db.Model):
 class Alumno(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
-    matricula = db.Column(db.String(50), unique=True, nullable=False)
+    matricula = db.Column(db.String(20), unique=True, nullable=False)
 
 class Cita(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -27,4 +27,3 @@ class Cita(db.Model):
 
     paciente = db.relationship("Paciente", backref="citas")
     alumno = db.relationship("Alumno", backref="citas")
-
