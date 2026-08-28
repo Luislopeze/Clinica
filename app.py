@@ -3,13 +3,13 @@ from models import db, Paciente, Alumno, Cita
 
 app = Flask(__name__)
 
-# Conexión a tu base de datos Render (usa la URL que ya tienes)
+# Conexión a tu base de datos en Render
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://clinica_db_ov6b_user:l2yxIhbi371H74I5HVh8B69581fJ1iOI@dpg-da8b3q0ae00c73cd5sog-a/clinica_db_ov6b"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-# 🔧 Crea las tablas automáticamente al iniciar la app
+# 🔧 Crea las tablas automáticamente
 @app.before_first_request
 def crear_tablas():
     db.create_all()
